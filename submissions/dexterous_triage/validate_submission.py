@@ -111,8 +111,8 @@ def main() -> int:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest.get("registration_uuid") != uuid:
         return fail("submission_manifest.json UUID must match registration.json.")
-    if manifest.get("canonical_pull_request") != "https://github.com/Faraday-Future-AI/Robothon-starter/pull/14":
-        return fail("submission_manifest.json must point to canonical PR #14.")
+    if manifest.get("canonical_pull_request") != "https://github.com/Faraday-Future-AI/Robothon-starter/pull/15":
+        return fail("submission_manifest.json must point to canonical PR #15.")
 
     print("[ok] Dexterous Triage Lab submission package is internally consistent.")
     return 0
