@@ -107,7 +107,7 @@ def main() -> int:
         return fail("Rubric scorecard must cover all eight official scoring dimensions.")
 
     narration = narration_path.read_text(encoding="utf-8")
-    if "Lock." not in narration:
+    if "Servo locks vial." not in narration:
         return fail("Narration SRT must include the visual-servo story beat.")
 
     contact_timeline = json.loads(contact_timeline_path.read_text(encoding="utf-8"))

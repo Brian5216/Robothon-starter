@@ -1,31 +1,31 @@
 1
 00:00:00,000 --> 00:00:07,680
-Scan.
+Sensors online.
 
 2
 00:00:07,680 --> 00:00:16,000
-Lock.
+Servo locks vial.
 
 3
 00:00:16,000 --> 00:00:24,320
-Grip.
+Five-finger grip.
 
 4
 00:00:24,320 --> 00:00:35,200
-Uncap.
+Cap rotation.
 
 5
 00:00:35,200 --> 00:00:44,800
-Place.
+Sterile transfer.
 
 6
 00:00:44,800 --> 00:00:52,480
-Audit.
+Audit confirmed.
 
 7
 00:00:52,480 --> 00:00:59,520
-Recover.
+Slip recovered.
 
 8
 00:00:59,520 --> 00:01:04,000
-Export.
+Dataset exported.
