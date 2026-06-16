@@ -91,14 +91,14 @@ STAGES = [
 ]
 
 NARRATION = [
-    (0.00, 0.12, "System boots: sensors, task zones, and five-finger hand come online."),
-    (0.12, 0.25, "Visual servoing aligns the palm to the medicine vial under pose disturbance."),
-    (0.25, 0.38, "Five fingers close with contact-balanced grip, protecting the fragile vial."),
-    (0.38, 0.55, "Wrist roll and thumb opposition rotate the cap while the vial stays stable."),
-    (0.55, 0.70, "The hand carries the vial to the sterile pod with residual corrections active."),
-    (0.70, 0.82, "Delivery is confirmed only after the audit button is pressed."),
-    (0.82, 0.93, "A slip impulse is observed and corrected before release."),
-    (0.93, 1.01, "The run exports video, trajectory, policy card, stress eval, and judge brief."),
+    (0.00, 0.12, "Sensors online."),
+    (0.12, 0.25, "Servo locks vial."),
+    (0.25, 0.38, "Five-finger grip."),
+    (0.38, 0.55, "Cap rotation."),
+    (0.55, 0.70, "Sterile transfer."),
+    (0.70, 0.82, "Audit confirmed."),
+    (0.82, 0.93, "Slip recovered."),
+    (0.93, 1.01, "Dataset exported."),
 ]
 
 
@@ -486,6 +486,16 @@ def render_schematic(sample: dict, width: int, height: int) -> np.ndarray:
         draw.rounded_rectangle((cx - sx, cy - sy, cx + sx, cy + sy), radius=8, fill=fill, outline=(230, 240, 255, 120), width=1)
         draw.text((cx - sx + 8, cy - sy + 6), label, fill=(235, 245, 255, 230), font=ImageFont.load_default())
 
+    def world_path(points: list[np.ndarray]) -> list[tuple[int, int]]:
+        return [xy(float(p[0]), float(p[1])) for p in points]
+
+    def arrow(start: tuple[int, int], end: tuple[int, int], fill: tuple[int, int, int, int], width_px: int = 4) -> None:
+        draw.line((start[0], start[1], end[0], end[1]), fill=fill, width=width_px)
+        angle = math.atan2(end[1] - start[1], end[0] - start[0])
+        for delta in [2.55, -2.55]:
+            p = (end[0] + int(math.cos(angle + delta) * 14), end[1] + int(math.sin(angle + delta) * 14))
+            draw.line((end[0], end[1], p[0], p[1]), fill=fill, width=width_px)
+
     draw.rectangle((60, 120, width - 60, height - 75), fill=(24, 30, 38, 255), outline=(96, 118, 140, 255), width=2)
     for i in range(11):
         x = 60 + i * (width - 120) / 10
@@ -498,6 +508,15 @@ def render_schematic(sample: dict, width: int, height: int) -> np.ndarray:
     zone((0.45, 0.20), (0.23, 0.17), (28, 220, 95, 90), "sterile pod")
     zone((0.08, 0.38), (0.18, 0.13), (255, 125, 40, 90), "cap discard")
     zone((0.70, -0.24), (0.18, 0.13), (255, 55, 55, 90), "audit")
+
+    phase = float(sample["phase"])
+    path_points = world_path([START_VIAL, HAND_GRASP, HAND_UNCAP, POD_VIAL, HAND_BUTTON, HAND_PRESENT])
+    for idx in range(len(path_points) - 1):
+        alpha = 70 + int(120 * min(1.0, max(0.0, phase * 5 - idx)))
+        draw.line((path_points[idx][0], path_points[idx][1], path_points[idx + 1][0], path_points[idx + 1][1]), fill=(110, 210, 255, alpha), width=3)
+    for idx, point in enumerate(path_points):
+        if phase * 5 >= idx - 0.2:
+            draw.ellipse((point[0] - 5, point[1] - 5, point[0] + 5, point[1] + 5), fill=(255, 240, 110, 190))
 
     vial = sample["vial_xyz"]
     cap = sample["cap_xyz"]
@@ -512,6 +531,16 @@ def render_schematic(sample: dict, width: int, height: int) -> np.ndarray:
     draw.ellipse((vx - 14, vy - 28, vx + 14, vy + 28), fill=(110, 210, 255, 170), outline=(230, 250, 255, 240), width=2)
     draw.rectangle((vx - 12, vy - 8, vx + 12, vy + 10), fill=(255, 255, 255, 130))
     draw.ellipse((cx - 15, cy - 15, cx + 15, cy + 15), fill=(30, 105, 255, 220), outline=(180, 215, 255, 255), width=2)
+
+    if sample["stage"] in {"boot", "approach"}:
+        sweep = int((0.5 + 0.5 * math.sin(phase * 70.0)) * (width - 180))
+        draw.polygon([(80 + sweep, 130), (120 + sweep, 130), (vx, vy)], fill=(80, 180, 255, 48), outline=(120, 220, 255, 110))
+    if sample["stage"] == "uncap":
+        for r in [23, 31, 39]:
+            draw.arc((cx - r, cy - r, cx + r, cy + r), start=int(phase * 900) % 360, end=(int(phase * 900) + 230) % 360, fill=(255, 230, 90, 210), width=3)
+    if sample["stage"] == "recover":
+        wave = int(8 + 38 * (1.0 - smoothstep(0.82, 0.93, phase)))
+        draw.ellipse((vx - wave, vy - wave, vx + wave, vy + wave), outline=(255, 80, 120, 180), width=3)
 
     button_x, button_y = xy(0.70, -0.24)
     depression = int(18 * min(1.0, sample["button_depth_m"] / 0.032))
@@ -530,10 +559,13 @@ def render_schematic(sample: dict, width: int, height: int) -> np.ndarray:
     servo = float(sample.get("visual_servo_error_m", 0.0))
     raw_servo = float(sample.get("raw_visual_servo_error_m", servo))
     conf = float(sample.get("policy_confidence", 0.0))
+    correction = np.array(sample.get("feedback_correction_xyz", [0.0, 0.0, 0.0]))
+    arrow_end = (hx + int(correction[0] * 1800), hy - int(correction[1] * 1800))
+    arrow((hx, hy), arrow_end, (255, 210, 80, 210), width_px=5)
     draw.rectangle((80, 82, width - 80, 104), fill=(8, 13, 20, 180), outline=(120, 150, 180, 160))
     draw.text((92, 88), f"closed-loop residual policy | corrected servo {servo:.3f} m from raw {raw_servo:.3f} m | confidence {conf:.2f}", fill=(235, 245, 255, 230), font=ImageFont.load_default())
 
-    draw.rectangle((88, height - 118, width - 88, height - 88), fill=(8, 13, 20, 180), outline=(255, 240, 186, 150))
+    draw.rectangle((88, height - 118, 360, height - 88), fill=(8, 13, 20, 180), outline=(255, 240, 186, 150))
     draw.text((104, height - 110), narration_for_phase(sample["phase"]), fill=(255, 240, 186, 245), font=ImageFont.load_default())
 
     return np.asarray(image)

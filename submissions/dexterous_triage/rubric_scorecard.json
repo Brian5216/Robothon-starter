@@ -39,7 +39,7 @@
     },
     "presentation": {
       "target_score": 9.8,
-      "evidence": "Demo overlays stage narration, raw-vs-corrected servo error, slip observer, residual norm, confidence, and task metrics; SRT subtitles are included."
+      "evidence": "Demo overlays concise stage text, dynamic route trails, scan beams, residual arrows, slip ripples, raw-vs-corrected servo error, residual norm, confidence, and task metrics; SRT subtitles are included."
     },
     "innovation": {
       "target_score": 9.4,

@@ -8,7 +8,7 @@ Registration UUID: 9e089c2c-c100-4dad-8652-052d998ce23e
 - Technical approach: Deterministic imitation-style stage prior plus closed-loop residual policy using visual-servo/contact/slip feedback, with MJCF joints, actuators, free bodies, collision geometry, frame sensors, touch sensors, generated narrative video overlays, SRT subtitles, trajectory JSON, policy card, fixed-seed stress evaluation, and self-audit report.
 - Core features: Five-finger grasp, in-hand cap rotation, fragile-object handling, audit button confirmation, slip recovery, raw-vs-corrected visual-servo metrics, per-sample residual actions, controller confidence, 32-rollout baseline-vs-residual evaluation, and data-collection export.
 - Highlights: Designed to cover all eight official scoring dimensions, especially MuJoCo depth, task design, control, dexterous manipulation, presentation, and engineering quality.
-- v5 highlights: post-residual median visual-servo error is 0.00672 m, down 68.61% from raw error; demo video now includes narrative overlays and matching SRT subtitles.
+- v6 highlights: post-residual median visual-servo error is 0.00672 m, down 68.61% from raw error; demo video now uses concise subtitles plus dynamic route trails, residual arrows, scan beams, cap-rotation arcs, and slip-recovery ripples.
 - Scope notes: High-level plan is deterministic for reproducible judging; residual control is closed-loop, logged, and stress-tested against a no-residual baseline.
 - Future improvements: Learned visuomotor policy weights, randomized task generation, additional failure modes, and policy training from exported trajectories.
 
