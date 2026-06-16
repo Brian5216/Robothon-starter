@@ -1,0 +1,183 @@
+<mujoco model="dexterous_triage_lab">
+  <compiler angle="degree" autolimits="true"/>
+  <option timestep="0.004" gravity="0 0 -9.81" integrator="RK4"/>
+
+  <visual>
+    <global offwidth="1280" offheight="720"/>
+    <rgba haze="0.05 0.06 0.08 1"/>
+    <quality shadowsize="4096"/>
+    <map znear="0.01" zfar="20"/>
+  </visual>
+
+  <asset>
+    <texture name="floor_grid" type="2d" builtin="checker" width="512" height="512"
+      rgb1="0.04 0.05 0.06" rgb2="0.09 0.10 0.12"/>
+    <material name="floor_mat" texture="floor_grid" texrepeat="7 5" reflectance="0.08"/>
+    <material name="table_mat" rgba="0.13 0.15 0.18 1"/>
+    <material name="rail_mat" rgba="0.30 0.38 0.48 1"/>
+    <material name="hand_mat" rgba="0.86 0.89 0.92 1"/>
+    <material name="finger_mat" rgba="0.18 0.23 0.29 1"/>
+    <material name="pad_mat" rgba="0.05 0.08 0.10 1"/>
+    <material name="warning_mat" rgba="1.00 0.56 0.10 1"/>
+    <material name="target_mat" rgba="0.20 0.95 0.44 0.72"/>
+    <material name="danger_mat" rgba="1.00 0.10 0.08 1"/>
+    <material name="vial_mat" rgba="0.48 0.82 1.00 0.55"/>
+    <material name="cap_mat" rgba="0.10 0.35 0.95 1"/>
+    <material name="pod_mat" rgba="0.82 0.92 1.00 0.55"/>
+  </asset>
+
+  <default>
+    <geom contype="1" conaffinity="1" friction="1.2 0.04 0.002" solref="0.01 1" solimp="0.9 0.95 0.001"/>
+    <joint damping="1.2" armature="0.01"/>
+    <site size="0.012" rgba="1 1 1 0.55"/>
+  </default>
+
+  <worldbody>
+    <geom name="floor" type="plane" size="5 4 0.05" material="floor_mat"/>
+    <geom name="work_table" type="box" pos="0 0 0.58" size="1.18 0.58 0.045" material="table_mat"/>
+    <geom name="left_rail" type="box" pos="0 0.59 0.69" size="1.22 0.018 0.055" material="rail_mat"/>
+    <geom name="right_rail" type="box" pos="0 -0.59 0.69" size="1.22 0.018 0.055" material="rail_mat"/>
+    <geom name="rear_rail" type="box" pos="-1.20 0 0.69" size="0.018 0.60 0.055" material="rail_mat"/>
+
+    <geom name="scan_zone" type="box" pos="-0.56 -0.18 0.632" size="0.19 0.16 0.006" rgba="0.08 0.32 0.95 0.55"/>
+    <geom name="sterile_pod_zone" type="box" pos="0.45 0.20 0.636" size="0.23 0.17 0.008" material="target_mat"/>
+    <geom name="discard_zone" type="box" pos="0.08 0.38 0.634" size="0.18 0.13 0.006" rgba="1.00 0.40 0.08 0.50"/>
+    <geom name="audit_zone" type="box" pos="0.70 -0.24 0.634" size="0.18 0.13 0.006" rgba="0.94 0.12 0.12 0.50"/>
+
+    <body name="sterile_pod" pos="0.45 0.20 0.70">
+      <geom name="pod_base" type="box" size="0.17 0.105 0.035" material="pod_mat"/>
+      <geom name="pod_back" type="box" pos="0.00 0.105 0.055" size="0.17 0.012 0.070" rgba="0.62 0.82 1.00 0.35"/>
+      <geom name="pod_left" type="box" pos="-0.17 0.00 0.055" size="0.012 0.105 0.070" rgba="0.62 0.82 1.00 0.35"/>
+      <geom name="pod_right" type="box" pos="0.17 0.00 0.055" size="0.012 0.105 0.070" rgba="0.62 0.82 1.00 0.35"/>
+      <site name="pod_goal_site" pos="0 0 0.095" rgba="0.2 1 0.35 0.8"/>
+    </body>
+
+    <body name="button_housing" pos="0.70 -0.24 0.69">
+      <geom name="button_base" type="box" size="0.12 0.08 0.035" rgba="0.10 0.10 0.12 1"/>
+      <body name="confirm_button" pos="0 0 0.058">
+        <joint name="button_slide" type="slide" axis="0 0 1" range="-0.034 0.000" damping="4"/>
+        <geom name="button_cap" type="cylinder" size="0.045 0.018" material="danger_mat"/>
+        <site name="button_site" pos="0 0 0.022" rgba="1 0.2 0.2 0.8"/>
+      </body>
+    </body>
+
+    <body name="fragile_vial" pos="-0.56 -0.18 0.75">
+      <joint name="vial_free" type="free"/>
+      <geom name="vial_glass" type="cylinder" size="0.038 0.110" material="vial_mat" mass="0.08"/>
+      <geom name="vial_label" type="box" pos="0 -0.039 0" size="0.030 0.002 0.050" rgba="1 1 1 0.72" contype="0" conaffinity="0"/>
+      <site name="vial_grasp_site" pos="0 0 0" rgba="0.4 0.9 1 0.8"/>
+    </body>
+
+    <body name="vial_cap" pos="-0.56 -0.18 0.88">
+      <joint name="cap_free" type="free"/>
+      <geom name="blue_cap" type="cylinder" size="0.041 0.026" material="cap_mat" mass="0.03"/>
+      <site name="cap_site" pos="0 0 0.028" rgba="0.2 0.4 1 0.8"/>
+    </body>
+
+    <body name="confidence_beacon" pos="-0.12 -0.47 0.70">
+      <geom name="beacon_stem" type="cylinder" size="0.015 0.08" rgba="0.8 0.8 0.8 1"/>
+      <geom name="beacon_light" type="sphere" pos="0 0 0.10" size="0.035" rgba="0.1 1 0.5 0.8"/>
+    </body>
+
+    <body name="triage_rig" pos="0 0 0.78">
+      <joint name="base_x" type="slide" axis="1 0 0" range="-0.95 0.95" damping="18"/>
+      <joint name="base_y" type="slide" axis="0 1 0" range="-0.48 0.48" damping="18"/>
+      <joint name="lift_z" type="slide" axis="0 0 1" range="-0.12 0.23" damping="14"/>
+      <geom name="gantry_crossbar" type="box" pos="0 0 0.18" size="0.13 0.025 0.025" rgba="0.35 0.42 0.52 1" contype="0" conaffinity="0"/>
+
+      <body name="wrist" pos="0 0 0.06">
+        <joint name="wrist_yaw" type="hinge" axis="0 0 1" range="-95 95" damping="3"/>
+        <joint name="wrist_pitch" type="hinge" axis="0 1 0" range="-55 55" damping="3"/>
+        <joint name="wrist_roll" type="hinge" axis="1 0 0" range="-160 160" damping="3"/>
+        <geom name="wrist_shell" type="cylinder" size="0.045 0.055" rgba="0.42 0.50 0.62 1"/>
+
+        <body name="palm" pos="0 0 -0.075">
+          <geom name="palm_plate" type="box" size="0.082 0.050 0.025" material="hand_mat"/>
+          <site name="palm_center" pos="0 0 -0.018" rgba="1 1 1 0.75"/>
+
+          <body name="index_base" pos="0.055 -0.034 -0.012">
+            <joint name="index_abd" type="hinge" axis="0 0 1" range="-32 32"/>
+            <joint name="index_flex" type="hinge" axis="0 1 0" range="-8 92"/>
+            <geom name="index_prox" type="capsule" fromto="0 0 0 0.105 0 -0.018" size="0.011" material="finger_mat"/>
+            <body name="index_tip_body" pos="0.105 0 -0.018">
+              <joint name="index_tip" type="hinge" axis="0 1 0" range="0 92"/>
+              <geom name="index_dist" type="capsule" fromto="0 0 0 0.070 0 -0.012" size="0.010" material="finger_mat"/>
+              <site name="index_pad_site" pos="0.070 0 -0.012" size="0.014" rgba="0.05 0.95 1 0.8"/>
+            </body>
+          </body>
+
+          <body name="middle_base" pos="0.058 0.000 -0.012">
+            <joint name="middle_abd" type="hinge" axis="0 0 1" range="-24 24"/>
+            <joint name="middle_flex" type="hinge" axis="0 1 0" range="-8 96"/>
+            <geom name="middle_prox" type="capsule" fromto="0 0 0 0.112 0 -0.018" size="0.012" material="finger_mat"/>
+            <body name="middle_tip_body" pos="0.112 0 -0.018">
+              <joint name="middle_tip" type="hinge" axis="0 1 0" range="0 94"/>
+              <geom name="middle_dist" type="capsule" fromto="0 0 0 0.074 0 -0.012" size="0.011" material="finger_mat"/>
+              <site name="middle_pad_site" pos="0.074 0 -0.012" size="0.014" rgba="0.05 0.95 1 0.8"/>
+            </body>
+          </body>
+
+          <body name="ring_base" pos="0.052 0.034 -0.012">
+            <joint name="ring_abd" type="hinge" axis="0 0 1" range="-28 28"/>
+            <joint name="ring_flex" type="hinge" axis="0 1 0" range="-8 90"/>
+            <geom name="ring_prox" type="capsule" fromto="0 0 0 0.096 0 -0.018" size="0.010" material="finger_mat"/>
+            <body name="ring_tip_body" pos="0.096 0 -0.018">
+              <joint name="ring_tip" type="hinge" axis="0 1 0" range="0 88"/>
+              <geom name="ring_dist" type="capsule" fromto="0 0 0 0.066 0 -0.012" size="0.0095" material="finger_mat"/>
+              <site name="ring_pad_site" pos="0.066 0 -0.012" size="0.013" rgba="0.05 0.95 1 0.8"/>
+            </body>
+          </body>
+
+          <body name="thumb_base" pos="-0.030 -0.064 -0.010" euler="0 0 -38">
+            <joint name="thumb_opp" type="hinge" axis="0 0 1" range="-35 75"/>
+            <joint name="thumb_flex" type="hinge" axis="0 1 0" range="-12 88"/>
+            <geom name="thumb_prox" type="capsule" fromto="0 0 0 0.078 0.010 -0.016" size="0.012" material="finger_mat"/>
+            <body name="thumb_tip_body" pos="0.078 0.010 -0.016">
+              <joint name="thumb_tip" type="hinge" axis="0 1 0" range="0 86"/>
+              <geom name="thumb_dist" type="capsule" fromto="0 0 0 0.060 0.008 -0.010" size="0.0105" material="finger_mat"/>
+              <site name="thumb_pad_site" pos="0.060 0.008 -0.010" size="0.014" rgba="0.05 0.95 1 0.8"/>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+
+    <light name="key" pos="0 -2.4 3.2" dir="0 0.55 -1" diffuse="1 1 1"/>
+    <light name="rim" pos="-2 1.8 2.2" dir="0.7 -0.5 -1" diffuse="0.55 0.65 0.8"/>
+    <camera name="overview_camera" pos="1.55 -1.75 1.55" xyaxes="0.76 0.65 0 -0.34 0.39 0.86"/>
+  </worldbody>
+
+  <actuator>
+    <position name="base_x_servo" joint="base_x" kp="420" ctrlrange="-0.95 0.95" ctrllimited="true"/>
+    <position name="base_y_servo" joint="base_y" kp="420" ctrlrange="-0.48 0.48" ctrllimited="true"/>
+    <position name="lift_z_servo" joint="lift_z" kp="360" ctrlrange="-0.12 0.23" ctrllimited="true"/>
+    <position name="wrist_yaw_servo" joint="wrist_yaw" kp="120" ctrlrange="-1.65 1.65" ctrllimited="true"/>
+    <position name="wrist_pitch_servo" joint="wrist_pitch" kp="100" ctrlrange="-0.95 0.95" ctrllimited="true"/>
+    <position name="wrist_roll_servo" joint="wrist_roll" kp="100" ctrlrange="-2.79 2.79" ctrllimited="true"/>
+    <position name="index_abd_servo" joint="index_abd" kp="55"/>
+    <position name="index_flex_servo" joint="index_flex" kp="70"/>
+    <position name="index_tip_servo" joint="index_tip" kp="55"/>
+    <position name="middle_abd_servo" joint="middle_abd" kp="55"/>
+    <position name="middle_flex_servo" joint="middle_flex" kp="70"/>
+    <position name="middle_tip_servo" joint="middle_tip" kp="55"/>
+    <position name="ring_abd_servo" joint="ring_abd" kp="55"/>
+    <position name="ring_flex_servo" joint="ring_flex" kp="70"/>
+    <position name="ring_tip_servo" joint="ring_tip" kp="55"/>
+    <position name="thumb_opp_servo" joint="thumb_opp" kp="70"/>
+    <position name="thumb_flex_servo" joint="thumb_flex" kp="70"/>
+    <position name="thumb_tip_servo" joint="thumb_tip" kp="55"/>
+    <position name="button_servo" joint="button_slide" kp="100"/>
+  </actuator>
+
+  <sensor>
+    <framepos name="palm_position" objtype="site" objname="palm_center"/>
+    <framepos name="vial_position" objtype="site" objname="vial_grasp_site"/>
+    <framepos name="pod_goal_position" objtype="site" objname="pod_goal_site"/>
+    <jointpos name="wrist_roll_position" joint="wrist_roll"/>
+    <jointvel name="wrist_roll_velocity" joint="wrist_roll"/>
+    <jointpos name="button_position" joint="button_slide"/>
+    <touch name="index_touch" site="index_pad_site"/>
+    <touch name="middle_touch" site="middle_pad_site"/>
+    <touch name="thumb_touch" site="thumb_pad_site"/>
+  </sensor>
+</mujoco>

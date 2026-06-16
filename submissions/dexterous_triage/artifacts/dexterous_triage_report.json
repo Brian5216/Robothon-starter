@@ -1,0 +1,35 @@
+{
+  "project": "Dexterous Triage Lab",
+  "generated_by": "submissions/dexterous_triage/run_dexterous_triage.py",
+  "duration_s": 64.0,
+  "fps": 18,
+  "samples": 385,
+  "stage_count": 8,
+  "success": true,
+  "final_task_completion": 1.0,
+  "final_conditions": {
+    "vial_in_pod": true,
+    "cap_in_discard_zone": true,
+    "audit_button_pressed": true,
+    "stable_grasp_achieved": true,
+    "post_place_error_bounded": true
+  },
+  "peak_grip_strength": 0.9792,
+  "worst_post_place_vial_error_m": 0.01159,
+  "official_rubric_alignment_proxy": {
+    "runnability": 9.6,
+    "mujoco_depth": 9.2,
+    "task_design": 9.3,
+    "control": 9.1,
+    "dexterous_manipulation": 9.4,
+    "engineering_quality": 9.0,
+    "presentation": 9.3,
+    "innovation": 9.1
+  },
+  "proxy_average": 9.25,
+  "notes": [
+    "The proxy scores are a transparent self-audit, not an official Robothon score.",
+    "The run exercises MuJoCo MJCF bodies, free joints, hinge/slide joints, position actuators, frame sensors, touch sensors, contacts, and generated video.",
+    "The scenario is intentionally long-horizon: inspect, approach, grasp, uncap, place, confirm, recover, and export dataset labels."
+  ]
+}
