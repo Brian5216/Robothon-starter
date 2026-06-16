@@ -28,6 +28,7 @@ def main() -> int:
     eval_path = ROOT / "artifacts" / "dexterous_triage_eval.json"
     judge_brief_path = ROOT / "JUDGE_BRIEF.md"
     scorecard_path = ROOT / "rubric_scorecard.json"
+    manifest_path = ROOT / "submission_manifest.json"
 
     registration = json.loads(registration_path.read_text(encoding="utf-8"))
     uuid = registration.get("uuid", "")
@@ -40,7 +41,7 @@ def main() -> int:
     if f"Registration UUID: {uuid}" not in pr_text:
         return fail("PR_DESCRIPTION.md must contain the same UUID as registration.json.")
 
-    for path in [video_path, report_path, trajectory_path, policy_card_path, eval_path, judge_brief_path, scorecard_path]:
+    for path in [video_path, report_path, trajectory_path, policy_card_path, eval_path, judge_brief_path, scorecard_path, manifest_path]:
         if not path.exists():
             return fail(f"Missing required artifact: {path.relative_to(ROOT)}")
         if path.stat().st_size <= 0:
@@ -98,6 +99,12 @@ def main() -> int:
     scorecard = json.loads(scorecard_path.read_text(encoding="utf-8"))
     if len(scorecard.get("scorecard", {})) < 8:
         return fail("Rubric scorecard must cover all eight official scoring dimensions.")
+
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("registration_uuid") != uuid:
+        return fail("submission_manifest.json UUID must match registration.json.")
+    if manifest.get("canonical_pull_request") != "https://github.com/Faraday-Future-AI/Robothon-starter/pull/14":
+        return fail("submission_manifest.json must point to canonical PR #14.")
 
     print("[ok] Dexterous Triage Lab submission package is internally consistent.")
     return 0

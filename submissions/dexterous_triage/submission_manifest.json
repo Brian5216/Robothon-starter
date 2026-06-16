@@ -1,0 +1,34 @@
+{
+  "project_name": "Dexterous Triage Lab",
+  "registration_uuid": "9e089c2c-c100-4dad-8652-052d998ce23e",
+  "participant_name": "KK",
+  "canonical_pull_request": "https://github.com/Faraday-Future-AI/Robothon-starter/pull/14",
+  "version": "v4-judge-brief",
+  "summary": "Five-finger 22-channel MuJoCo dexterous hand with closed-loop residual visual-servo/contact/slip policy and fixed-seed stress evaluation.",
+  "primary_artifacts": {
+    "scene": "dexterous_triage_scene.xml",
+    "runner": "run_dexterous_triage.py",
+    "demo_video": "artifacts/dexterous_triage_demo.mp4",
+    "trajectory": "artifacts/dexterous_triage_trajectory.json",
+    "report": "artifacts/dexterous_triage_report.json",
+    "policy_card": "artifacts/dexterous_triage_policy_card.json",
+    "stress_eval": "artifacts/dexterous_triage_eval.json",
+    "judge_brief": "JUDGE_BRIEF.md",
+    "rubric_scorecard": "rubric_scorecard.json"
+  },
+  "headline_metrics": {
+    "actuated_channels": 22,
+    "hand_topology": "five-finger dexterous hand",
+    "final_task_completion": 1.0,
+    "residual_policy_success_rate": 1.0,
+    "baseline_success_rate": 0.6875,
+    "median_error_improvement_mm": 46.142,
+    "median_visual_servo_error_m": 0.02141,
+    "final_slip_observer_error_mm": 1.079
+  },
+  "run": {
+    "install": "python3 -m pip install -r requirements.txt",
+    "generate": "python submissions/dexterous_triage/run_dexterous_triage.py",
+    "validate": "python submissions/dexterous_triage/validate_submission.py"
+  }
+}

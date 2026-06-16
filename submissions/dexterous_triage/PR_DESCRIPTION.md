@@ -32,6 +32,7 @@ python submissions/dexterous_triage/run_dexterous_triage.py --quick
 - [x] Stress evaluation is included: `submissions/dexterous_triage/artifacts/dexterous_triage_eval.json`
 - [x] Judge brief is included: `submissions/dexterous_triage/JUDGE_BRIEF.md`
 - [x] Rubric scorecard is included: `submissions/dexterous_triage/rubric_scorecard.json`
+- [x] Machine-readable manifest is included: `submissions/dexterous_triage/submission_manifest.json`
 
 ## Checklist
 
