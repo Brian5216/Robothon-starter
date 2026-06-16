@@ -2,7 +2,7 @@
   "project_name": "Dexterous Triage Lab",
   "registration_uuid": "9e089c2c-c100-4dad-8652-052d998ce23e",
   "participant_name": "KK",
-  "canonical_pull_request": "https://github.com/Faraday-Future-AI/Robothon-starter/pull/24",
+  "canonical_pull_request": "https://github.com/Faraday-Future-AI/Robothon-starter/pull/25",
   "version": "v12-balanced-video",
   "summary": "Five-finger 22-channel MuJoCo dexterous hand with tight post-residual visual-servo metrics, closed-loop contact/slip policy, five-finger contact timeline, 60-second balanced demo pacing, concise one-layer subtitles, short key-moment badges, report-level physical bench protocol, and fixed-seed stress evaluation.",
   "primary_artifacts": {
