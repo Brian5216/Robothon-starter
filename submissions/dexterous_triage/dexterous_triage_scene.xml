@@ -128,6 +128,17 @@
             </body>
           </body>
 
+          <body name="little_base" pos="0.038 0.064 -0.010">
+            <joint name="little_abd" type="hinge" axis="0 0 1" range="-28 28"/>
+            <joint name="little_flex" type="hinge" axis="0 1 0" range="-8 86"/>
+            <geom name="little_prox" type="capsule" fromto="0 0 0 0.082 0 -0.016" size="0.009" material="finger_mat"/>
+            <body name="little_tip_body" pos="0.082 0 -0.016">
+              <joint name="little_tip" type="hinge" axis="0 1 0" range="0 82"/>
+              <geom name="little_dist" type="capsule" fromto="0 0 0 0.058 0 -0.010" size="0.0085" material="finger_mat"/>
+              <site name="little_pad_site" pos="0.058 0 -0.010" size="0.012" rgba="0.05 0.95 1 0.8"/>
+            </body>
+          </body>
+
           <body name="thumb_base" pos="-0.030 -0.064 -0.010" euler="0 0 -38">
             <joint name="thumb_opp" type="hinge" axis="0 0 1" range="-35 75"/>
             <joint name="thumb_flex" type="hinge" axis="0 1 0" range="-12 88"/>
@@ -163,6 +174,9 @@
     <position name="ring_abd_servo" joint="ring_abd" kp="55"/>
     <position name="ring_flex_servo" joint="ring_flex" kp="70"/>
     <position name="ring_tip_servo" joint="ring_tip" kp="55"/>
+    <position name="little_abd_servo" joint="little_abd" kp="55"/>
+    <position name="little_flex_servo" joint="little_flex" kp="68"/>
+    <position name="little_tip_servo" joint="little_tip" kp="52"/>
     <position name="thumb_opp_servo" joint="thumb_opp" kp="70"/>
     <position name="thumb_flex_servo" joint="thumb_flex" kp="70"/>
     <position name="thumb_tip_servo" joint="thumb_tip" kp="55"/>
@@ -178,6 +192,8 @@
     <jointpos name="button_position" joint="button_slide"/>
     <touch name="index_touch" site="index_pad_site"/>
     <touch name="middle_touch" site="middle_pad_site"/>
+    <touch name="ring_touch" site="ring_pad_site"/>
+    <touch name="little_touch" site="little_pad_site"/>
     <touch name="thumb_touch" site="thumb_pad_site"/>
   </sensor>
 </mujoco>

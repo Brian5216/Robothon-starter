@@ -73,6 +73,10 @@ def main() -> int:
     policy_card = json.loads(policy_card_path.read_text(encoding="utf-8"))
     if "closed_loop_evidence" not in policy_card:
         return fail("Policy card must include closed_loop_evidence.")
+    if int(policy_card.get("actuated_channels", 0)) < 22:
+        return fail("Policy card must document at least 22 actuated channels.")
+    if "five-finger" not in policy_card.get("hand_topology", ""):
+        return fail("Policy card must document the five-finger hand topology.")
 
     print("[ok] Dexterous Triage Lab submission package is internally consistent.")
     return 0

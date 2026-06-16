@@ -1,5 +1,5 @@
 {
-  "policy_name": "Dexterous Triage Residual Policy v2",
+  "policy_name": "Dexterous Triage Residual Policy v3",
   "controller_type": "deterministic closed-loop residual controller with imitation-style stage prior",
   "inputs": [
     "MuJoCo framepos sensors: palm_position, vial_position, pod_goal_position",
@@ -9,10 +9,12 @@
   ],
   "outputs": [
     "gantry xyz residual",
-    "finger grip residual",
+    "five-finger grip residual",
     "wrist roll/yaw stage action",
     "button confirmation action"
   ],
+  "actuated_channels": 22,
+  "hand_topology": "five-finger dexterous hand: thumb, index, middle, ring, little",
   "closed_loop_evidence": {
     "controller": "residual visual-servo/contact/slip policy",
     "median_visual_servo_error_m": 0.02141,

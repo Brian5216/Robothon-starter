@@ -3,10 +3,10 @@ Registration UUID: 9e089c2c-c100-4dad-8652-052d998ce23e
 ## Project Summary
 
 - Project name: Dexterous Triage Lab
-- Robot platform: Procedural MuJoCo four-finger dexterous hand with thumb opposition, wrist, gantry, sensors, actuators, and task objects.
+- Robot platform: Procedural MuJoCo five-finger dexterous hand with 22 controllable channels, thumb opposition, wrist, gantry, sensors, actuators, and task objects.
 - Task goal: Complete a disaster-response medication triage sequence: scan, approach, grasp, uncap, place into sterile pod, confirm with button press, recover from slip, and export labels.
 - Technical approach: Deterministic imitation-style stage prior plus closed-loop residual policy using visual-servo/contact/slip feedback, with MJCF joints, actuators, free bodies, collision geometry, frame sensors, touch sensors, generated video overlays, trajectory JSON, policy card, and self-audit report.
-- Core features: Multi-finger grasp, in-hand cap rotation, fragile-object handling, audit button confirmation, slip recovery, per-sample residual actions, controller confidence, and data-collection export.
+- Core features: Five-finger grasp, in-hand cap rotation, fragile-object handling, audit button confirmation, slip recovery, per-sample residual actions, controller confidence, and data-collection export.
 - Highlights: Designed to cover all eight official scoring dimensions, especially MuJoCo depth, task design, control, dexterous manipulation, presentation, and engineering quality.
 - Current limitations: High-level plan is deterministic rather than trained RL; object poses are guided for reproducible video, while residual actions are closed-loop and logged.
 - Future improvements: Learned visuomotor policy weights, randomized task generation, additional failure modes, and policy training from exported trajectories.
