@@ -25,6 +25,7 @@ def main() -> int:
     report_path = ROOT / "artifacts" / "dexterous_triage_report.json"
     trajectory_path = ROOT / "artifacts" / "dexterous_triage_trajectory.json"
     policy_card_path = ROOT / "artifacts" / "dexterous_triage_policy_card.json"
+    eval_path = ROOT / "artifacts" / "dexterous_triage_eval.json"
 
     registration = json.loads(registration_path.read_text(encoding="utf-8"))
     uuid = registration.get("uuid", "")
@@ -37,7 +38,7 @@ def main() -> int:
     if f"Registration UUID: {uuid}" not in pr_text:
         return fail("PR_DESCRIPTION.md must contain the same UUID as registration.json.")
 
-    for path in [video_path, report_path, trajectory_path, policy_card_path]:
+    for path in [video_path, report_path, trajectory_path, policy_card_path, eval_path]:
         if not path.exists():
             return fail(f"Missing required artifact: {path.relative_to(ROOT)}")
         if path.stat().st_size <= 0:
@@ -77,6 +78,15 @@ def main() -> int:
         return fail("Policy card must document at least 22 actuated channels.")
     if "five-finger" not in policy_card.get("hand_topology", ""):
         return fail("Policy card must document the five-finger hand topology.")
+
+    evaluation = json.loads(eval_path.read_text(encoding="utf-8"))
+    summary = evaluation.get("summary", {})
+    if int(evaluation.get("rollout_count", 0)) < 32:
+        return fail("Evaluation must include at least 32 fixed-seed stress rollouts.")
+    if float(summary.get("residual_policy_success_rate", 0.0)) < 0.95:
+        return fail("Residual policy stress-test success rate is below 95%.")
+    if float(summary.get("median_improvement_mm", 0.0)) <= 10.0:
+        return fail("Residual policy must beat the no-residual baseline by more than 10 mm median.")
 
     print("[ok] Dexterous Triage Lab submission package is internally consistent.")
     return 0
