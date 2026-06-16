@@ -36,15 +36,15 @@
     },
     "engineering_quality": {
       "target_score": 9.5,
-      "evidence": "Deterministic implementation, structured artifacts, fixed-seed ablation, validator thresholds, and self-contained submission folder."
+      "evidence": "Deterministic implementation, structured artifacts, fixed-seed ablation, validator thresholds, self-contained submission folder, and report-level physical bench protocol."
     },
     "presentation": {
       "target_score": 9.8,
-      "evidence": "Demo overlays concise stage text, dynamic route trails, scan beams, residual arrows, slip ripples, raw-vs-corrected servo error, residual norm, confidence, and task metrics; SRT subtitles and contact timeline evidence are included."
+      "evidence": "Demo is tightened to 60 seconds with one concise subtitle layer, short key-moment badges, dynamic route trails, scan beams, residual arrows, slip ripples, servo error, residual norm, confidence, and task metrics; SRT subtitles and contact timeline evidence are included."
     },
     "innovation": {
       "target_score": 9.4,
-      "evidence": "Safety-confirmed medication triage with residual recovery and dataset-export framing."
+      "evidence": "Safety-confirmed medication triage with residual recovery, hardware-transfer test planning, and dataset-export framing."
     }
   },
   "stress_eval_summary": {

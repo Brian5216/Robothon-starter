@@ -94,12 +94,18 @@ STAGES = [
 NARRATION = [
     (0.00, 0.12, "Sensors online."),
     (0.12, 0.25, "Servo locks vial."),
-    (0.25, 0.38, "Five-finger grip."),
-    (0.38, 0.55, "Cap rotation."),
+    (0.25, 0.38, "Five-finger grip locked."),
+    (0.38, 0.55, "Cap rotation clear."),
     (0.55, 0.70, "Sterile transfer."),
     (0.70, 0.82, "Audit confirmed."),
     (0.82, 0.93, "Slip recovered."),
     (0.93, 1.01, "Dataset exported."),
+]
+
+KEY_MOMENTS = [
+    (0.30, 0.36, "GRASP"),
+    (0.43, 0.52, "UNCAP"),
+    (0.84, 0.90, "RECOVER"),
 ]
 
 
@@ -493,19 +499,35 @@ def narration_for_phase(phase: float) -> str:
     return NARRATION[-1][2]
 
 
+def key_moment_for_phase(phase: float) -> str:
+    for start, end, text in KEY_MOMENTS:
+        if start <= phase < end:
+            return text
+    return ""
+
+
 def overlay_frame(frame: np.ndarray, sample: dict, frame_idx: int, total_frames: int) -> np.ndarray:
     image = Image.fromarray(frame)
     draw = ImageDraw.Draw(image, "RGBA")
     width, height = image.size
     font = ImageFont.load_default()
 
-    panel_h = 112
+    panel_h = 96
     draw.rectangle((0, 0, width, panel_h), fill=(4, 8, 12, 168))
     draw.text((22, 16), "Dexterous Triage Lab - closed-loop residual MuJoCo policy", fill=(238, 246, 255, 255), font=font)
     draw.text((22, 38), sample["stage_title"], fill=(126, 221, 255, 255), font=font)
-    draw.text((22, 60), f"signal: {sample['success_signal']}", fill=(200, 215, 225, 255), font=font)
-    draw.text((22, 82), narration_for_phase(sample["phase"]), fill=(255, 240, 186, 255), font=font)
+    draw.text((22, 64), narration_for_phase(sample["phase"]), fill=(255, 240, 186, 255), font=font)
     draw.text((width - 180, 18), f"{frame_idx + 1}/{total_frames}", fill=(220, 230, 240, 255), font=font)
+
+    key_moment = key_moment_for_phase(sample["phase"])
+    if key_moment:
+        pulse = 0.5 + 0.5 * math.sin(frame_idx * 0.65)
+        badge_w = 118
+        x1 = width - 382
+        y1 = 14
+        fill = (255, 215, 76, 160 + int(70 * pulse))
+        draw.rectangle((x1, y1, x1 + badge_w, y1 + 24), fill=fill, outline=(255, 245, 170, 230), width=1)
+        draw.text((x1 + 8, y1 + 7), key_moment, fill=(20, 22, 24, 255), font=font)
 
     bars = [
         ("task", sample["task_completion"], (0, 224, 120, 255)),
@@ -520,15 +542,14 @@ def overlay_frame(frame: np.ndarray, sample: dict, frame_idx: int, total_frames:
         draw.rectangle((x0 + 56, y, x0 + 220, y + 8), outline=(220, 230, 240, 140), width=1)
         draw.rectangle((x0 + 56, y, x0 + 56 + int(164 * value), y + 8), fill=color)
 
-    draw.rectangle((18, height - 72, width - 18, height - 18), fill=(4, 8, 12, 130))
+    draw.rectangle((18, height - 58, width - 18, height - 18), fill=(4, 8, 12, 120))
     footer = (
         f"vial error {sample['vial_goal_error_m']:.3f} m | "
         f"servo {sample['visual_servo_error_m']:.3f} m | "
-        f"raw {sample['raw_visual_servo_error_m']:.3f} m | "
         f"slip obs {sample['slip_observer_error_mm']:.1f} mm | "
         f"residual {sample['residual_action_norm']:.3f}"
     )
-    draw.text((28, height - 54), footer, fill=(230, 238, 245, 255), font=font)
+    draw.text((28, height - 44), footer, fill=(230, 238, 245, 255), font=font)
     return np.asarray(image)
 
 
@@ -627,8 +648,14 @@ def render_schematic(sample: dict, width: int, height: int) -> np.ndarray:
     draw.rectangle((80, 82, width - 80, 104), fill=(8, 13, 20, 180), outline=(120, 150, 180, 160))
     draw.text((92, 88), f"closed-loop residual policy | corrected servo {servo:.3f} m from raw {raw_servo:.3f} m | confidence {conf:.2f}", fill=(235, 245, 255, 230), font=ImageFont.load_default())
 
-    draw.rectangle((88, height - 118, 360, height - 88), fill=(8, 13, 20, 180), outline=(255, 240, 186, 150))
-    draw.text((104, height - 110), narration_for_phase(sample["phase"]), fill=(255, 240, 186, 245), font=ImageFont.load_default())
+    key_moment = key_moment_for_phase(phase)
+    if key_moment:
+        pulse = 0.5 + 0.5 * math.sin(phase * 140.0)
+        target_x, target_y = (cx, cy) if sample["stage"] == "uncap" else (vx, vy)
+        ring = int(30 + 12 * pulse)
+        draw.ellipse((target_x - ring, target_y - ring, target_x + ring, target_y + ring), outline=(255, 225, 72, 220), width=4)
+        draw.rectangle((target_x + 20, target_y - 13, target_x + 150, target_y + 13), fill=(255, 215, 76, 210))
+        draw.text((target_x + 28, target_y - 5), key_moment, fill=(20, 22, 24, 255), font=ImageFont.load_default())
 
     return np.asarray(image)
 
@@ -692,9 +719,24 @@ def self_audit_report(trajectory: list[dict], duration_s: float, fps: int, polic
             "The v5 hand exposes 21 robot joints plus the audit button channel: gantry xyz, wrist yaw/pitch/roll, five multi-joint fingers, and button actuation.",
             "The run exercises MuJoCo MJCF bodies, free joints, hinge/slide joints, position actuators, frame sensors, touch sensors, contacts, and generated video.",
             "The controller logs visual-servo residuals, contact-target error, slip-observer recovery, and policy confidence for each sampled rollout state.",
-            "The generated video includes stage narration overlays and an accompanying SRT subtitle file for clearer automated review.",
+            "The generated video uses one concise subtitle layer plus short key-moment badges to avoid clutter while highlighting grasp, cap rotation, and slip recovery.",
             "The scenario is intentionally long-horizon: inspect, approach, grasp, uncap, place, confirm, recover, and export dataset labels.",
         ],
+        "physical_test_protocol": {
+            "status": "bench protocol prepared; no unverified hardware result is claimed",
+            "cases": [
+                "10 nominal vial pick-uncap-place trials",
+                "10 trials with 15 mm vial pose offset",
+                "8 cap-torque variation trials",
+                "8 induced-slip recovery trials",
+            ],
+            "pass_gates": [
+                ">=8/10 nominal completions",
+                "median final vial error <=18 mm",
+                "cap removed in >=6/8 torque-variation trials without crush",
+                "slip recovered within 1.5 s in >=6/8 trials",
+            ],
+        },
     }
 
 
@@ -912,7 +954,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--eval", type=Path, default=DEFAULT_EVAL)
     parser.add_argument("--narration", type=Path, default=DEFAULT_NARRATION)
     parser.add_argument("--contact-timeline", type=Path, default=DEFAULT_CONTACT_TIMELINE)
-    parser.add_argument("--duration", type=float, default=64.0, help="Demo duration in seconds; 64s satisfies the 1-3 minute guideline.")
+    parser.add_argument("--duration", type=float, default=60.0, help="Demo duration in seconds; 60s keeps the 1-3 minute guideline while tightening pacing.")
     parser.add_argument("--fps", type=int, default=18)
     parser.add_argument("--width", type=int, default=960)
     parser.add_argument("--height", type=int, default=544)
