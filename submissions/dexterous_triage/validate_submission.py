@@ -24,6 +24,7 @@ def main() -> int:
     video_path = ROOT / "artifacts" / "dexterous_triage_demo.mp4"
     report_path = ROOT / "artifacts" / "dexterous_triage_report.json"
     trajectory_path = ROOT / "artifacts" / "dexterous_triage_trajectory.json"
+    policy_card_path = ROOT / "artifacts" / "dexterous_triage_policy_card.json"
 
     registration = json.loads(registration_path.read_text(encoding="utf-8"))
     uuid = registration.get("uuid", "")
@@ -36,7 +37,7 @@ def main() -> int:
     if f"Registration UUID: {uuid}" not in pr_text:
         return fail("PR_DESCRIPTION.md must contain the same UUID as registration.json.")
 
-    for path in [video_path, report_path, trajectory_path]:
+    for path in [video_path, report_path, trajectory_path, policy_card_path]:
         if not path.exists():
             return fail(f"Missing required artifact: {path.relative_to(ROOT)}")
         if path.stat().st_size <= 0:
@@ -47,6 +48,31 @@ def main() -> int:
         return fail("Self-audit report success is false; regenerate or fix the demo.")
     if float(report.get("final_task_completion", 0.0)) < 1.0:
         return fail("Self-audit final_task_completion is below 1.0.")
+    closed_loop = report.get("closed_loop_metrics", {})
+    if closed_loop.get("controller") != "residual visual-servo/contact/slip policy":
+        return fail("Report must include closed-loop residual controller metrics.")
+    if float(closed_loop.get("median_visual_servo_error_m", 1.0)) > 0.030:
+        return fail("Closed-loop median visual-servo error is too high.")
+    if int(closed_loop.get("corrections_applied", 0)) <= 0:
+        return fail("Closed-loop policy did not apply residual corrections.")
+
+    trajectory = json.loads(trajectory_path.read_text(encoding="utf-8"))
+    required_fields = {
+        "control_mode",
+        "visual_servo_error_m",
+        "contact_balance_error",
+        "slip_observer_error_mm",
+        "residual_action_norm",
+        "policy_confidence",
+        "feedback_correction_xyz",
+    }
+    missing = required_fields.difference(trajectory[0])
+    if missing:
+        return fail(f"Trajectory is missing closed-loop fields: {sorted(missing)}")
+
+    policy_card = json.loads(policy_card_path.read_text(encoding="utf-8"))
+    if "closed_loop_evidence" not in policy_card:
+        return fail("Policy card must include closed_loop_evidence.")
 
     print("[ok] Dexterous Triage Lab submission package is internally consistent.")
     return 0
