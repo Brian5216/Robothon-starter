@@ -27,6 +27,7 @@ def main() -> int:
     policy_card_path = ROOT / "artifacts" / "dexterous_triage_policy_card.json"
     eval_path = ROOT / "artifacts" / "dexterous_triage_eval.json"
     narration_path = ROOT / "artifacts" / "dexterous_triage_narration.srt"
+    contact_timeline_path = ROOT / "artifacts" / "dexterous_triage_contact_timeline.json"
     judge_brief_path = ROOT / "JUDGE_BRIEF.md"
     scorecard_path = ROOT / "rubric_scorecard.json"
     manifest_path = ROOT / "submission_manifest.json"
@@ -42,7 +43,7 @@ def main() -> int:
     if f"Registration UUID: {uuid}" not in pr_text:
         return fail("PR_DESCRIPTION.md must contain the same UUID as registration.json.")
 
-    for path in [video_path, report_path, trajectory_path, policy_card_path, eval_path, narration_path, judge_brief_path, scorecard_path, manifest_path]:
+    for path in [video_path, report_path, trajectory_path, policy_card_path, eval_path, narration_path, contact_timeline_path, judge_brief_path, scorecard_path, manifest_path]:
         if not path.exists():
             return fail(f"Missing required artifact: {path.relative_to(ROOT)}")
         if path.stat().st_size <= 0:
@@ -73,6 +74,7 @@ def main() -> int:
         "residual_action_norm",
         "policy_confidence",
         "feedback_correction_xyz",
+        "finger_contact_proxy",
     }
     missing = required_fields.difference(trajectory[0])
     if missing:
@@ -107,6 +109,19 @@ def main() -> int:
     narration = narration_path.read_text(encoding="utf-8")
     if "Servo locks vial." not in narration:
         return fail("Narration SRT must include the visual-servo story beat.")
+
+    contact_timeline = json.loads(contact_timeline_path.read_text(encoding="utf-8"))
+    if contact_timeline.get("finger_order") != ["thumb", "index", "middle", "ring", "little"]:
+        return fail("Contact timeline must document all five fingers in order.")
+    if int(contact_timeline.get("sample_count", 0)) < 80:
+        return fail("Contact timeline must include enough sampled contact states.")
+    contact_summary = contact_timeline.get("summary", {})
+    if int(contact_summary.get("max_active_fingers", 0)) < 5:
+        return fail("Contact timeline must show all five fingers active.")
+    if float(contact_summary.get("stable_contact_duration_s", 0.0)) <= 0.0:
+        return fail("Contact timeline must include a stable contact window.")
+    if int(contact_summary.get("recovery_window_samples", 0)) <= 0:
+        return fail("Contact timeline must include slip-recovery samples.")
 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest.get("registration_uuid") != uuid:

@@ -31,6 +31,7 @@ DEFAULT_REPORT = DEFAULT_ARTIFACT_DIR / "dexterous_triage_report.json"
 DEFAULT_POLICY_CARD = DEFAULT_ARTIFACT_DIR / "dexterous_triage_policy_card.json"
 DEFAULT_EVAL = DEFAULT_ARTIFACT_DIR / "dexterous_triage_eval.json"
 DEFAULT_NARRATION = DEFAULT_ARTIFACT_DIR / "dexterous_triage_narration.srt"
+DEFAULT_CONTACT_TIMELINE = DEFAULT_ARTIFACT_DIR / "dexterous_triage_contact_timeline.json"
 
 PRIMARY_JOINTS = [
     "base_x",
@@ -373,6 +374,13 @@ def apply_policy(model: mujoco.MjModel, data: mujoco.MjData, time_s: float, dura
             1,
         )
     )
+    finger_contact_proxy = {
+        "thumb": round(float(np.clip((fingers["thumb_flex"] + fingers["thumb_tip"]) / 1.58, 0.0, 1.0)), 4),
+        "index": round(float(np.clip((fingers["index_flex"] + fingers["index_tip"]) / 1.82, 0.0, 1.0)), 4),
+        "middle": round(float(np.clip((fingers["middle_flex"] + fingers["middle_tip"]) / 1.88, 0.0, 1.0)), 4),
+        "ring": round(float(np.clip((fingers["ring_flex"] + fingers["ring_tip"]) / 1.54, 0.0, 1.0)), 4),
+        "little": round(float(np.clip((fingers["little_flex"] + fingers["little_tip"]) / 1.34, 0.0, 1.0)), 4),
+    }
     slip_mm = float(1000.0 * np.linalg.norm(vial_pos - (POD_VIAL if phase > 0.70 else vial_pos)))
     task_completion = np.mean(
         [
@@ -395,11 +403,65 @@ def apply_policy(model: mujoco.MjModel, data: mujoco.MjData, time_s: float, dura
         "vial_xyz": vial_pos.round(4).tolist(),
         "cap_xyz": cap_pos.round(4).tolist(),
         "grip_strength": round(grip_strength, 4),
+        "finger_contact_proxy": finger_contact_proxy,
         "vial_goal_error_m": round(vial_goal_error, 5),
         "cap_goal_error_m": round(cap_goal_error, 5),
         "button_depth_m": round(abs(button_depth), 5),
         "slip_mm": round(slip_mm, 3),
         "task_completion": round(float(task_completion), 4),
+    }
+
+
+def build_contact_timeline(trajectory: list[dict]) -> dict:
+    contact_rows = []
+    stable_rows = []
+    recovery_rows = []
+    for row in trajectory:
+        contacts = row.get("finger_contact_proxy", {})
+        contact_values = [float(contacts.get(name, 0.0)) for name in ["thumb", "index", "middle", "ring", "little"]]
+        mean_contact = float(np.mean(contact_values))
+        contact_spread = float(max(contact_values) - min(contact_values))
+        balance_score = float(np.clip(1.0 - contact_spread - float(row["contact_balance_error"]), 0.0, 1.0))
+        active_fingers = int(sum(value >= 0.45 for value in contact_values))
+        timeline_row = {
+            "time_s": row.get("time_s", 0.0),
+            "stage": row["stage"],
+            "phase": row["phase"],
+            "contacts": contacts,
+            "active_fingers": active_fingers,
+            "mean_contact": round(mean_contact, 4),
+            "contact_balance_score": round(balance_score, 4),
+            "grip_strength": row["grip_strength"],
+            "slip_observer_error_mm": row["slip_observer_error_mm"],
+            "event": "slip_recovery" if row["stage"] == "recover" else ("stable_hold" if active_fingers >= 5 and balance_score >= 0.70 else row["stage"]),
+        }
+        contact_rows.append(timeline_row)
+        if active_fingers >= 5 and balance_score >= 0.70:
+            stable_rows.append(timeline_row)
+        if row["stage"] == "recover":
+            recovery_rows.append(timeline_row)
+
+    stable_duration_s = 0.0
+    if stable_rows:
+        stable_duration_s = float(stable_rows[-1]["time_s"] - stable_rows[0]["time_s"])
+    peak_recovery_contact = max((float(row["mean_contact"]) for row in recovery_rows), default=0.0)
+    peak_recovery_slip = max((float(row["slip_observer_error_mm"]) for row in recovery_rows), default=0.0)
+    post_recovery_final_slip = float(trajectory[-1]["slip_observer_error_mm"]) if trajectory else 0.0
+    return {
+        "project": "Dexterous Triage Lab",
+        "source": "derived from dexterous_triage_trajectory.json finger_contact_proxy fields",
+        "finger_order": ["thumb", "index", "middle", "ring", "little"],
+        "sample_count": len(contact_rows),
+        "summary": {
+            "max_active_fingers": max((row["active_fingers"] for row in contact_rows), default=0),
+            "median_contact_balance_score": round(float(np.median([row["contact_balance_score"] for row in contact_rows])), 4),
+            "stable_contact_duration_s": round(stable_duration_s, 3),
+            "peak_recovery_mean_contact": round(peak_recovery_contact, 4),
+            "peak_recovery_slip_observer_error_mm": round(peak_recovery_slip, 3),
+            "post_recovery_final_slip_observer_error_mm": round(post_recovery_final_slip, 3),
+            "recovery_window_samples": len(recovery_rows),
+        },
+        "timeline": contact_rows,
     }
 
 
@@ -759,6 +821,7 @@ def run_demo(
     policy_card_path: Path,
     eval_path: Path,
     narration_path: Path,
+    contact_timeline_path: Path,
     duration_s: float,
     fps: int,
     width: int,
@@ -780,6 +843,7 @@ def run_demo(
     policy_card_path.parent.mkdir(parents=True, exist_ok=True)
     eval_path.parent.mkdir(parents=True, exist_ok=True)
     narration_path.parent.mkdir(parents=True, exist_ok=True)
+    contact_timeline_path.parent.mkdir(parents=True, exist_ok=True)
 
     frames: list[np.ndarray] = []
     trajectory: list[dict] = []
@@ -808,12 +872,14 @@ def run_demo(
     report = self_audit_report(trajectory, duration_s, fps, policy_state)
     card = policy_card(policy_state, report)
     evaluation = generalization_eval(report)
+    contact_timeline = build_contact_timeline(trajectory)
     iio.imwrite(video_path, np.asarray(frames), fps=fps, codec="libx264", macro_block_size=8)
     trajectory_path.write_text(json.dumps(trajectory, indent=2), encoding="utf-8")
     report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
     policy_card_path.write_text(json.dumps(card, indent=2), encoding="utf-8")
     eval_path.write_text(json.dumps(evaluation, indent=2), encoding="utf-8")
     write_narration_srt(narration_path, duration_s)
+    contact_timeline_path.write_text(json.dumps(contact_timeline, indent=2), encoding="utf-8")
 
     return {
         "project": "Dexterous Triage Lab",
@@ -824,6 +890,7 @@ def run_demo(
         "policy_card": str(policy_card_path),
         "evaluation": str(eval_path),
         "narration": str(narration_path),
+        "contact_timeline": str(contact_timeline_path),
         "duration_s": duration_s,
         "fps": fps,
         "resolution": [width, height],
@@ -844,6 +911,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--policy-card", type=Path, default=DEFAULT_POLICY_CARD)
     parser.add_argument("--eval", type=Path, default=DEFAULT_EVAL)
     parser.add_argument("--narration", type=Path, default=DEFAULT_NARRATION)
+    parser.add_argument("--contact-timeline", type=Path, default=DEFAULT_CONTACT_TIMELINE)
     parser.add_argument("--duration", type=float, default=64.0, help="Demo duration in seconds; 64s satisfies the 1-3 minute guideline.")
     parser.add_argument("--fps", type=int, default=18)
     parser.add_argument("--width", type=int, default=960)
@@ -864,6 +932,7 @@ def main() -> int:
         policy_card_path=args.policy_card,
         eval_path=args.eval,
         narration_path=args.narration,
+        contact_timeline_path=args.contact_timeline,
         duration_s=duration,
         fps=fps,
         width=args.width,
