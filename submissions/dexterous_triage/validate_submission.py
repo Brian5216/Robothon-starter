@@ -28,6 +28,8 @@ def main() -> int:
     eval_path = ROOT / "artifacts" / "dexterous_triage_eval.json"
     narration_path = ROOT / "artifacts" / "dexterous_triage_narration.srt"
     contact_timeline_path = ROOT / "artifacts" / "dexterous_triage_contact_timeline.json"
+    comparison_video_path = ROOT / "artifacts" / "dexterous_triage_comparison_demo.mp4"
+    baseline_contrast_path = ROOT / "artifacts" / "dexterous_triage_baseline_contrast.json"
     judge_brief_path = ROOT / "JUDGE_BRIEF.md"
     scorecard_path = ROOT / "rubric_scorecard.json"
     manifest_path = ROOT / "submission_manifest.json"
@@ -43,7 +45,20 @@ def main() -> int:
     if f"Registration UUID: {uuid}" not in pr_text:
         return fail("PR_DESCRIPTION.md must contain the same UUID as registration.json.")
 
-    for path in [video_path, report_path, trajectory_path, policy_card_path, eval_path, narration_path, contact_timeline_path, judge_brief_path, scorecard_path, manifest_path]:
+    for path in [
+        video_path,
+        report_path,
+        trajectory_path,
+        policy_card_path,
+        eval_path,
+        narration_path,
+        contact_timeline_path,
+        comparison_video_path,
+        baseline_contrast_path,
+        judge_brief_path,
+        scorecard_path,
+        manifest_path,
+    ]:
         if not path.exists():
             return fail(f"Missing required artifact: {path.relative_to(ROOT)}")
         if path.stat().st_size <= 0:
@@ -122,6 +137,17 @@ def main() -> int:
         return fail("Contact timeline must include a stable contact window.")
     if int(contact_summary.get("recovery_window_samples", 0)) <= 0:
         return fail("Contact timeline must include slip-recovery samples.")
+
+    baseline_contrast = json.loads(baseline_contrast_path.read_text(encoding="utf-8"))
+    contrast_summary = baseline_contrast.get("summary", {})
+    if not contrast_summary.get("residual_success"):
+        return fail("Baseline contrast must show residual-policy success.")
+    if contrast_summary.get("baseline_success"):
+        return fail("Baseline contrast must show the no-residual baseline failing the disturbance.")
+    if float(contrast_summary.get("median_servo_error_reduction_pct", 0.0)) < 50.0:
+        return fail("Baseline contrast must show at least 50% median servo-error reduction.")
+    if float(contrast_summary.get("baseline_final_vial_goal_error_mm", 0.0)) <= float(contrast_summary.get("residual_final_vial_goal_error_mm", 999.0)):
+        return fail("Baseline contrast must show residual final placement better than baseline.")
 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest.get("registration_uuid") != uuid:

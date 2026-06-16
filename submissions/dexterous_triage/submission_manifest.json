@@ -3,8 +3,8 @@
   "registration_uuid": "9e089c2c-c100-4dad-8652-052d998ce23e",
   "participant_name": "KK",
   "canonical_pull_request": "https://github.com/Faraday-Future-AI/Robothon-starter/pull/18",
-  "version": "v6-dynamic-video",
-  "summary": "Five-finger 22-channel MuJoCo dexterous hand with tighter post-residual visual-servo metrics, closed-loop contact/slip policy, five-finger contact timeline, concise subtitles, dynamic route/residual/slip visuals, and fixed-seed stress evaluation.",
+  "version": "v8-baseline-contrast",
+  "summary": "Five-finger 22-channel MuJoCo dexterous hand with tighter post-residual visual-servo metrics, closed-loop contact/slip policy, five-finger contact timeline, concise subtitles, dynamic route/residual/slip visuals, side-by-side baseline failure versus residual recovery video, and fixed-seed stress evaluation.",
   "primary_artifacts": {
     "scene": "dexterous_triage_scene.xml",
     "runner": "run_dexterous_triage.py",
@@ -15,6 +15,8 @@
     "stress_eval": "artifacts/dexterous_triage_eval.json",
     "narration": "artifacts/dexterous_triage_narration.srt",
     "contact_timeline": "artifacts/dexterous_triage_contact_timeline.json",
+    "comparison_demo": "artifacts/dexterous_triage_comparison_demo.mp4",
+    "baseline_contrast": "artifacts/dexterous_triage_baseline_contrast.json",
     "judge_brief": "JUDGE_BRIEF.md",
     "rubric_scorecard": "rubric_scorecard.json"
   },
@@ -28,7 +30,10 @@
     "raw_median_visual_servo_error_m": 0.02141,
     "median_visual_servo_error_m": 0.00672,
     "servo_error_reduction_pct": 68.61,
-    "final_slip_observer_error_mm": 1.079
+    "final_slip_observer_error_mm": 1.079,
+    "baseline_post_place_worst_vial_goal_error_mm": 121.62,
+    "residual_post_place_worst_vial_goal_error_mm": 11.59,
+    "baseline_contrast_median_servo_error_reduction_pct": 86.65
   },
   "run": {
     "install": "python3 -m pip install -r requirements.txt",

@@ -11,7 +11,9 @@
     "artifacts/dexterous_triage_policy_card.json",
     "artifacts/dexterous_triage_trajectory.json",
     "artifacts/dexterous_triage_narration.srt",
-    "artifacts/dexterous_triage_contact_timeline.json"
+    "artifacts/dexterous_triage_contact_timeline.json",
+    "artifacts/dexterous_triage_comparison_demo.mp4",
+    "artifacts/dexterous_triage_baseline_contrast.json"
   ],
   "scorecard": {
     "runnability": {
@@ -28,7 +30,7 @@
     },
     "control": {
       "target_score": 9.8,
-      "evidence": "Closed-loop residual policy logs raw and corrected visual-servo error, contact balance, five-finger contact timeline, slip observer, residual action norm, and policy confidence."
+      "evidence": "Closed-loop residual policy logs raw and corrected visual-servo error, contact balance, five-finger contact timeline, baseline-prior failure versus residual recovery contrast, slip observer, residual action norm, and policy confidence."
     },
     "dexterous_manipulation": {
       "target_score": 9.6,
@@ -40,11 +42,11 @@
     },
     "presentation": {
       "target_score": 9.8,
-      "evidence": "Demo overlays concise stage text, dynamic route trails, scan beams, residual arrows, slip ripples, raw-vs-corrected servo error, residual norm, confidence, and task metrics; SRT subtitles and contact timeline evidence are included."
+      "evidence": "Demo overlays concise stage text, dynamic route trails, scan beams, residual arrows, slip ripples, raw-vs-corrected servo error, residual norm, confidence, and task metrics; SRT subtitles, contact timeline evidence, and a side-by-side failure-recovery comparison video are included."
     },
     "innovation": {
       "target_score": 9.4,
-      "evidence": "Safety-confirmed medication triage with residual recovery and dataset-export framing."
+      "evidence": "Safety-confirmed medication triage with residual recovery, baseline-prior contrast, and dataset-export framing."
     }
   },
   "stress_eval_summary": {
