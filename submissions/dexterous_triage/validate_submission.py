@@ -124,6 +124,8 @@ def main() -> int:
     narration = narration_path.read_text(encoding="utf-8")
     if "Servo locks vial." not in narration:
         return fail("Narration SRT must include the visual-servo story beat.")
+    if "Baseline fails; residual recovers." not in narration:
+        return fail("Narration SRT must include the baseline-contrast chapter.")
 
     contact_timeline = json.loads(contact_timeline_path.read_text(encoding="utf-8"))
     if contact_timeline.get("finger_order") != ["thumb", "index", "middle", "ring", "little"]:

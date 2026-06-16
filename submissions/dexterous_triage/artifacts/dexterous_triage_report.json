@@ -47,6 +47,7 @@
     "The run exercises MuJoCo MJCF bodies, free joints, hinge/slide joints, position actuators, frame sensors, touch sensors, contacts, and generated video.",
     "The controller logs visual-servo residuals, contact-target error, slip-observer recovery, and policy confidence for each sampled rollout state.",
     "The generated video includes stage narration overlays and an accompanying SRT subtitle file for clearer automated review.",
+    "The primary demo video ends with a side-by-side baseline-prior failure versus residual-policy recovery chapter.",
     "The scenario is intentionally long-horizon: inspect, approach, grasp, uncap, place, confirm, recover, and export dataset labels."
   ]
 }

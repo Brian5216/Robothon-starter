@@ -4,12 +4,12 @@ Registration UUID: 9e089c2c-c100-4dad-8652-052d998ce23e
 
 ## Why This Entry Should Compete For #1
 
-Dexterous Triage Lab is a five-finger, 22-channel MuJoCo dexterous-hand system for a long-horizon medication triage task. It is designed to answer the previous review concern directly: the current version is not only a staged video, it logs closed-loop residual control, raw-vs-corrected visual servo error, contact balancing, a five-finger contact timeline, slip recovery, concise subtitles, dynamic route/residual/slip visuals, a side-by-side baseline failure versus residual recovery video, and fixed-seed stress-test results.
+Dexterous Triage Lab is a five-finger, 22-channel MuJoCo dexterous-hand system for a long-horizon medication triage task. It is designed to answer the previous review concern directly: the current version is not only a staged video, it logs closed-loop residual control, raw-vs-corrected visual servo error, contact balancing, a five-finger contact timeline, slip recovery, concise subtitles, dynamic route/residual/slip visuals, an embedded side-by-side baseline failure versus residual recovery chapter in the primary demo, and fixed-seed stress-test results.
 
 ## What To Inspect First
 
-1. `artifacts/dexterous_triage_demo.mp4` - generated demo video.
-2. `artifacts/dexterous_triage_comparison_demo.mp4` - side-by-side stage-prior baseline failure versus residual-policy recovery.
+1. `artifacts/dexterous_triage_demo.mp4` - generated primary demo video; its final chapter is the baseline-prior failure versus residual-policy recovery comparison.
+2. `artifacts/dexterous_triage_comparison_demo.mp4` - standalone side-by-side comparison clip.
 3. `artifacts/dexterous_triage_baseline_contrast.json` - machine-readable comparison metrics for the same disturbance.
 4. `artifacts/dexterous_triage_report.json` - success criteria, closed-loop metrics, self-audit.
 5. `artifacts/dexterous_triage_eval.json` - 32-rollout stress test and baseline comparison.

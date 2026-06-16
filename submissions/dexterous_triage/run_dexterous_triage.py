@@ -831,6 +831,7 @@ def self_audit_report(trajectory: list[dict], duration_s: float, fps: int, polic
             "The run exercises MuJoCo MJCF bodies, free joints, hinge/slide joints, position actuators, frame sensors, touch sensors, contacts, and generated video.",
             "The controller logs visual-servo residuals, contact-target error, slip-observer recovery, and policy confidence for each sampled rollout state.",
             "The generated video includes stage narration overlays and an accompanying SRT subtitle file for clearer automated review.",
+            "The primary demo video ends with a side-by-side baseline-prior failure versus residual-policy recovery chapter.",
             "The scenario is intentionally long-horizon: inspect, approach, grasp, uncap, place, confirm, recover, and export dataset labels.",
         ],
     }
@@ -941,13 +942,30 @@ def srt_time(seconds: float) -> str:
     return f"{h:02}:{m:02}:{s:02},{ms:03}"
 
 
-def write_narration_srt(path: Path, duration_s: float) -> None:
+def write_narration_srt(path: Path, duration_s: float, comparison_duration_s: float = 0.0) -> None:
     blocks = []
     for idx, (start, end, text) in enumerate(NARRATION, start=1):
         start_s = min(duration_s, start * duration_s)
         end_s = min(duration_s, end * duration_s)
         blocks.append(f"{idx}\n{srt_time(start_s)} --> {srt_time(end_s)}\n{text}\n")
+    if comparison_duration_s > 0.0:
+        blocks.append(
+            f"{len(blocks) + 1}\n"
+            f"{srt_time(duration_s)} --> {srt_time(duration_s + comparison_duration_s)}\n"
+            "Baseline fails; residual recovers.\n"
+        )
     path.write_text("\n".join(blocks), encoding="utf-8")
+
+
+def transition_frame(width: int, height: int, title: str, subtitle: str) -> np.ndarray:
+    image = Image.new("RGB", (width, height), (8, 11, 15))
+    draw = ImageDraw.Draw(image, "RGBA")
+    font = ImageFont.load_default()
+    draw.rectangle((0, 0, width, height), fill=(4, 8, 12, 255))
+    draw.rounded_rectangle((80, 132, width - 80, height - 132), radius=8, fill=(24, 30, 38, 255), outline=(120, 210, 255, 190), width=2)
+    draw.text((112, height // 2 - 24), title, fill=(238, 246, 255, 255), font=font)
+    draw.text((112, height // 2 + 4), subtitle, fill=(255, 240, 186, 245), font=font)
+    return np.asarray(image)
 
 
 def run_demo(
@@ -1017,13 +1035,24 @@ def run_demo(
     contact_timeline = build_contact_timeline(trajectory)
     baseline_contrast = build_baseline_contrast(trajectory)
     comparison_frames = [render_comparison_frame(row, width, height) for row in trajectory]
-    iio.imwrite(video_path, np.asarray(frames), fps=fps, codec="libx264", macro_block_size=8)
+    transition_frames = [
+        transition_frame(
+            width,
+            height,
+            "Baseline contrast chapter",
+            "Same disturbance: stage-prior baseline drifts; residual policy recovers.",
+        )
+        for _ in range(max(1, int(2.0 * fps)))
+    ]
+    main_video_frames = frames + transition_frames + comparison_frames
+    comparison_duration_s = (len(transition_frames) + len(comparison_frames)) / float(fps)
+    iio.imwrite(video_path, np.asarray(main_video_frames), fps=fps, codec="libx264", macro_block_size=8)
     iio.imwrite(comparison_video_path, np.asarray(comparison_frames), fps=max(5, min(fps, 10)), codec="libx264", macro_block_size=8)
     trajectory_path.write_text(json.dumps(trajectory, indent=2), encoding="utf-8")
     report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
     policy_card_path.write_text(json.dumps(card, indent=2), encoding="utf-8")
     eval_path.write_text(json.dumps(evaluation, indent=2), encoding="utf-8")
-    write_narration_srt(narration_path, duration_s)
+    write_narration_srt(narration_path, duration_s, comparison_duration_s)
     contact_timeline_path.write_text(json.dumps(contact_timeline, indent=2), encoding="utf-8")
     baseline_contrast_path.write_text(json.dumps(baseline_contrast, indent=2), encoding="utf-8")
 
@@ -1039,7 +1068,9 @@ def run_demo(
         "contact_timeline": str(contact_timeline_path),
         "comparison_video": str(comparison_video_path),
         "baseline_contrast": str(baseline_contrast_path),
-        "duration_s": duration_s,
+        "duration_s": round(duration_s + comparison_duration_s, 3),
+        "task_demo_duration_s": duration_s,
+        "comparison_chapter_duration_s": round(comparison_duration_s, 3),
         "fps": fps,
         "resolution": [width, height],
         "success": report["success"],
