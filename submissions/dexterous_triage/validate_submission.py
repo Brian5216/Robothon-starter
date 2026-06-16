@@ -26,6 +26,8 @@ def main() -> int:
     trajectory_path = ROOT / "artifacts" / "dexterous_triage_trajectory.json"
     policy_card_path = ROOT / "artifacts" / "dexterous_triage_policy_card.json"
     eval_path = ROOT / "artifacts" / "dexterous_triage_eval.json"
+    judge_brief_path = ROOT / "JUDGE_BRIEF.md"
+    scorecard_path = ROOT / "rubric_scorecard.json"
 
     registration = json.loads(registration_path.read_text(encoding="utf-8"))
     uuid = registration.get("uuid", "")
@@ -38,7 +40,7 @@ def main() -> int:
     if f"Registration UUID: {uuid}" not in pr_text:
         return fail("PR_DESCRIPTION.md must contain the same UUID as registration.json.")
 
-    for path in [video_path, report_path, trajectory_path, policy_card_path, eval_path]:
+    for path in [video_path, report_path, trajectory_path, policy_card_path, eval_path, judge_brief_path, scorecard_path]:
         if not path.exists():
             return fail(f"Missing required artifact: {path.relative_to(ROOT)}")
         if path.stat().st_size <= 0:
@@ -87,6 +89,15 @@ def main() -> int:
         return fail("Residual policy stress-test success rate is below 95%.")
     if float(summary.get("median_improvement_mm", 0.0)) <= 10.0:
         return fail("Residual policy must beat the no-residual baseline by more than 10 mm median.")
+
+    judge_brief = judge_brief_path.read_text(encoding="utf-8")
+    for phrase in ["five-finger", "22-channel", "Residual-policy success", "Rubric Mapping"]:
+        if phrase not in judge_brief:
+            return fail(f"Judge brief is missing required phrase: {phrase}")
+
+    scorecard = json.loads(scorecard_path.read_text(encoding="utf-8"))
+    if len(scorecard.get("scorecard", {})) < 8:
+        return fail("Rubric scorecard must cover all eight official scoring dimensions.")
 
     print("[ok] Dexterous Triage Lab submission package is internally consistent.")
     return 0
