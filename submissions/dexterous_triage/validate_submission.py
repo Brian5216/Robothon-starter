@@ -28,6 +28,7 @@ def main() -> int:
     eval_path = ROOT / "artifacts" / "dexterous_triage_eval.json"
     narration_path = ROOT / "artifacts" / "dexterous_triage_narration.srt"
     contact_timeline_path = ROOT / "artifacts" / "dexterous_triage_contact_timeline.json"
+    real_world_plan_path = ROOT / "artifacts" / "dexterous_triage_real_world_test_plan.json"
     judge_brief_path = ROOT / "JUDGE_BRIEF.md"
     scorecard_path = ROOT / "rubric_scorecard.json"
     manifest_path = ROOT / "submission_manifest.json"
@@ -43,7 +44,7 @@ def main() -> int:
     if f"Registration UUID: {uuid}" not in pr_text:
         return fail("PR_DESCRIPTION.md must contain the same UUID as registration.json.")
 
-    for path in [video_path, report_path, trajectory_path, policy_card_path, eval_path, narration_path, contact_timeline_path, judge_brief_path, scorecard_path, manifest_path]:
+    for path in [video_path, report_path, trajectory_path, policy_card_path, eval_path, narration_path, contact_timeline_path, real_world_plan_path, judge_brief_path, scorecard_path, manifest_path]:
         if not path.exists():
             return fail(f"Missing required artifact: {path.relative_to(ROOT)}")
         if path.stat().st_size <= 0:
@@ -122,6 +123,14 @@ def main() -> int:
         return fail("Contact timeline must include a stable contact window.")
     if int(contact_summary.get("recovery_window_samples", 0)) <= 0:
         return fail("Contact timeline must include slip-recovery samples.")
+
+    real_world_plan = json.loads(real_world_plan_path.read_text(encoding="utf-8"))
+    if "hardware protocol" not in real_world_plan.get("status", ""):
+        return fail("Real-world test plan must be explicit about hardware protocol status.")
+    if len(real_world_plan.get("physical_test_matrix", [])) < 4:
+        return fail("Real-world test plan must include a physical test matrix.")
+    if "simulated_acceptance_metrics" not in real_world_plan:
+        return fail("Real-world test plan must link simulated acceptance metrics.")
 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest.get("registration_uuid") != uuid:
