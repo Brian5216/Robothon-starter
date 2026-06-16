@@ -28,6 +28,11 @@ def main() -> int:
     eval_path = ROOT / "artifacts" / "dexterous_triage_eval.json"
     narration_path = ROOT / "artifacts" / "dexterous_triage_narration.srt"
     contact_timeline_path = ROOT / "artifacts" / "dexterous_triage_contact_timeline.json"
+    keyframe_paths = [
+        ROOT / "artifacts" / "keyframes" / "01_five_finger_grasp.png",
+        ROOT / "artifacts" / "keyframes" / "02_cap_rotation.png",
+        ROOT / "artifacts" / "keyframes" / "03_slip_recovery.png",
+    ]
     judge_brief_path = ROOT / "JUDGE_BRIEF.md"
     scorecard_path = ROOT / "rubric_scorecard.json"
     manifest_path = ROOT / "submission_manifest.json"
@@ -43,7 +48,7 @@ def main() -> int:
     if f"Registration UUID: {uuid}" not in pr_text:
         return fail("PR_DESCRIPTION.md must contain the same UUID as registration.json.")
 
-    for path in [video_path, report_path, trajectory_path, policy_card_path, eval_path, narration_path, contact_timeline_path, judge_brief_path, scorecard_path, manifest_path]:
+    for path in [video_path, report_path, trajectory_path, policy_card_path, eval_path, narration_path, contact_timeline_path, *keyframe_paths, judge_brief_path, scorecard_path, manifest_path]:
         if not path.exists():
             return fail(f"Missing required artifact: {path.relative_to(ROOT)}")
         if path.stat().st_size <= 0:

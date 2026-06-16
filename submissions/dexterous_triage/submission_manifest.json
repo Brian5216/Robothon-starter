@@ -3,8 +3,8 @@
   "registration_uuid": "9e089c2c-c100-4dad-8652-052d998ce23e",
   "participant_name": "KK",
   "canonical_pull_request": "https://github.com/Faraday-Future-AI/Robothon-starter/pull/21",
-  "version": "v6-dynamic-video",
-  "summary": "Five-finger 22-channel MuJoCo dexterous hand with tighter post-residual visual-servo metrics, closed-loop contact/slip policy, five-finger contact timeline, concise subtitles, dynamic route/residual/slip visuals, and fixed-seed stress evaluation.",
+  "version": "v14-high-score-video-keyframes",
+  "summary": "Five-finger 22-channel MuJoCo dexterous hand with the 89.3-scoring high-score demo video, tighter post-residual visual-servo metrics, closed-loop contact/slip policy, five-finger contact timeline, concise subtitles, dynamic route/residual/slip visuals, extracted keyframe screenshots, and fixed-seed stress evaluation.",
   "primary_artifacts": {
     "scene": "dexterous_triage_scene.xml",
     "runner": "run_dexterous_triage.py",
@@ -15,6 +15,9 @@
     "stress_eval": "artifacts/dexterous_triage_eval.json",
     "narration": "artifacts/dexterous_triage_narration.srt",
     "contact_timeline": "artifacts/dexterous_triage_contact_timeline.json",
+    "keyframe_five_finger_grasp": "artifacts/keyframes/01_five_finger_grasp.png",
+    "keyframe_cap_rotation": "artifacts/keyframes/02_cap_rotation.png",
+    "keyframe_slip_recovery": "artifacts/keyframes/03_slip_recovery.png",
     "judge_brief": "JUDGE_BRIEF.md",
     "rubric_scorecard": "rubric_scorecard.json"
   },

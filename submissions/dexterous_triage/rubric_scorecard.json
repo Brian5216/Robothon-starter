@@ -11,7 +11,10 @@
     "artifacts/dexterous_triage_policy_card.json",
     "artifacts/dexterous_triage_trajectory.json",
     "artifacts/dexterous_triage_narration.srt",
-    "artifacts/dexterous_triage_contact_timeline.json"
+    "artifacts/dexterous_triage_contact_timeline.json",
+    "artifacts/keyframes/01_five_finger_grasp.png",
+    "artifacts/keyframes/02_cap_rotation.png",
+    "artifacts/keyframes/03_slip_recovery.png"
   ],
   "scorecard": {
     "runnability": {
@@ -40,7 +43,7 @@
     },
     "presentation": {
       "target_score": 9.8,
-      "evidence": "Demo overlays concise stage text, dynamic route trails, scan beams, residual arrows, slip ripples, raw-vs-corrected servo error, residual norm, confidence, and task metrics; SRT subtitles and contact timeline evidence are included."
+      "evidence": "Demo overlays concise stage text, dynamic route trails, scan beams, residual arrows, slip ripples, raw-vs-corrected servo error, residual norm, confidence, and task metrics; SRT subtitles, contact timeline evidence, and three extracted keyframe screenshots are included."
     },
     "innovation": {
       "target_score": 9.4,

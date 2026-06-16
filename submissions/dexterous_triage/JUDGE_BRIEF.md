@@ -4,7 +4,7 @@ Registration UUID: 9e089c2c-c100-4dad-8652-052d998ce23e
 
 ## Why This Entry Should Compete For #1
 
-Dexterous Triage Lab is a five-finger, 22-channel MuJoCo dexterous-hand system for a long-horizon medication triage task. It is designed to answer the previous review concern directly: the current version is not only a staged video, it logs closed-loop residual control, raw-vs-corrected visual servo error, contact balancing, a five-finger contact timeline, slip recovery, concise subtitles, dynamic route/residual/slip visuals, and fixed-seed stress-test results.
+Dexterous Triage Lab is a five-finger, 22-channel MuJoCo dexterous-hand system for a long-horizon medication triage task. It is designed to answer the previous review concern directly: the current version is not only a staged video, it logs closed-loop residual control, raw-vs-corrected visual servo error, contact balancing, a five-finger contact timeline, slip recovery, concise subtitles, dynamic route/residual/slip visuals, extracted keyframe screenshots, and fixed-seed stress-test results.
 
 ## What To Inspect First
 
@@ -14,7 +14,8 @@ Dexterous Triage Lab is a five-finger, 22-channel MuJoCo dexterous-hand system f
 4. `artifacts/dexterous_triage_policy_card.json` - policy inputs, outputs, topology, and evidence.
 5. `artifacts/dexterous_triage_narration.srt` - stage narration matching the video overlays.
 6. `artifacts/dexterous_triage_contact_timeline.json` - five-finger active-contact, balance, stable-hold, and recovery evidence.
-7. `dexterous_triage_scene.xml` - five-finger MJCF hand, actuators, sensors, free bodies, and task objects.
+7. `artifacts/keyframes/` - extracted screenshots for five-finger grasp, cap rotation, and slip recovery.
+8. `dexterous_triage_scene.xml` - five-finger MJCF hand, actuators, sensors, free bodies, and task objects.
 
 ## Quantitative Evidence
 
@@ -27,6 +28,7 @@ Dexterous Triage Lab is a five-finger, 22-channel MuJoCo dexterous-hand system f
 - Visual-servo error reduction: 68.61%
 - Final slip observer error: 1.079 mm
 - Contact timeline: five active fingers, stable contact window, and recovery-window samples
+- Keyframe screenshots: five-finger grasp, in-hand cap rotation, and slip recovery frames extracted from the submitted demo video
 - Stress-test rollouts: 32 fixed seeds
 - No-residual baseline success: 68.75%
 - Residual-policy success: 100%
@@ -40,7 +42,7 @@ Dexterous Triage Lab is a five-finger, 22-channel MuJoCo dexterous-hand system f
 - Control: closed-loop residual controller using visual-servo, contact-target, five-finger contact timeline, and slip-observer feedback.
 - Dexterous manipulation: five-finger hand, thumb opposition, cap rotation, fragile vial handling, and placement.
 - Engineering quality: deterministic run, validation script, structured artifacts, and fixed-seed ablation.
-- Presentation: generated video overlays concise stage text, route trails, scan beams, residual arrows, slip ripples, servo error, slip observer, residual norm, and confidence; SRT subtitles and contact timeline evidence are included.
+- Presentation: generated video overlays concise stage text, route trails, scan beams, residual arrows, slip ripples, servo error, slip observer, residual norm, and confidence; SRT subtitles, extracted keyframes, and contact timeline evidence are included.
 - Innovation: combines dexterous medication handling, safety confirmation, residual recovery, and dataset export.
 
 ## Honest Scope
