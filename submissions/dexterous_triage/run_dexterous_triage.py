@@ -92,14 +92,14 @@ STAGES = [
 ]
 
 NARRATION = [
-    (0.00, 0.12, "Sensors online."),
-    (0.12, 0.25, "Servo locks vial."),
-    (0.25, 0.38, "Five-finger grip."),
-    (0.38, 0.55, "Cap rotation."),
-    (0.55, 0.70, "Sterile transfer."),
-    (0.70, 0.82, "Audit confirmed."),
-    (0.82, 0.93, "Slip recovered."),
-    (0.93, 1.01, "Dataset exported."),
+    (0.00, 0.12, "Scan."),
+    (0.12, 0.25, "Lock."),
+    (0.25, 0.38, "Grip."),
+    (0.38, 0.55, "Uncap."),
+    (0.55, 0.70, "Place."),
+    (0.70, 0.82, "Audit."),
+    (0.82, 0.93, "Recover."),
+    (0.93, 1.01, "Export."),
 ]
 
 
@@ -499,13 +499,11 @@ def overlay_frame(frame: np.ndarray, sample: dict, frame_idx: int, total_frames:
     width, height = image.size
     font = ImageFont.load_default()
 
-    panel_h = 112
+    panel_h = 74
     draw.rectangle((0, 0, width, panel_h), fill=(4, 8, 12, 168))
-    draw.text((22, 16), "Dexterous Triage Lab - closed-loop residual MuJoCo policy", fill=(238, 246, 255, 255), font=font)
-    draw.text((22, 38), sample["stage_title"], fill=(126, 221, 255, 255), font=font)
-    draw.text((22, 60), f"signal: {sample['success_signal']}", fill=(200, 215, 225, 255), font=font)
-    draw.text((22, 82), narration_for_phase(sample["phase"]), fill=(255, 240, 186, 255), font=font)
-    draw.text((width - 180, 18), f"{frame_idx + 1}/{total_frames}", fill=(220, 230, 240, 255), font=font)
+    draw.text((22, 16), "Dexterous Triage Lab", fill=(238, 246, 255, 255), font=font)
+    draw.text((22, 38), f"{sample['stage']} | {narration_for_phase(sample['phase'])}", fill=(126, 221, 255, 255), font=font)
+    draw.text((width - 180, 16), f"{frame_idx + 1}/{total_frames}", fill=(220, 230, 240, 255), font=font)
 
     bars = [
         ("task", sample["task_completion"], (0, 224, 120, 255)),
@@ -515,20 +513,19 @@ def overlay_frame(frame: np.ndarray, sample: dict, frame_idx: int, total_frames:
     ]
     x0 = width - 280
     for i, (label, value, color) in enumerate(bars):
-        y = 46 + i * 18
+        y = 28 + i * 10
         draw.text((x0, y - 2), label, fill=(230, 240, 245, 255), font=font)
-        draw.rectangle((x0 + 56, y, x0 + 220, y + 8), outline=(220, 230, 240, 140), width=1)
-        draw.rectangle((x0 + 56, y, x0 + 56 + int(164 * value), y + 8), fill=color)
+        draw.rectangle((x0 + 50, y, x0 + 214, y + 6), outline=(220, 230, 240, 140), width=1)
+        draw.rectangle((x0 + 50, y, x0 + 50 + int(164 * value), y + 6), fill=color)
 
-    draw.rectangle((18, height - 72, width - 18, height - 18), fill=(4, 8, 12, 130))
+    draw.rectangle((18, height - 50, width - 18, height - 18), fill=(4, 8, 12, 130))
     footer = (
-        f"vial error {sample['vial_goal_error_m']:.3f} m | "
-        f"servo {sample['visual_servo_error_m']:.3f} m | "
-        f"raw {sample['raw_visual_servo_error_m']:.3f} m | "
-        f"slip obs {sample['slip_observer_error_mm']:.1f} mm | "
-        f"residual {sample['residual_action_norm']:.3f}"
+        f"vial {sample['vial_goal_error_m']:.3f}m | "
+        f"servo {sample['visual_servo_error_m']:.3f}/{sample['raw_visual_servo_error_m']:.3f}m | "
+        f"slip {sample['slip_observer_error_mm']:.1f}mm | "
+        f"res {sample['residual_action_norm']:.3f}"
     )
-    draw.text((28, height - 54), footer, fill=(230, 238, 245, 255), font=font)
+    draw.text((28, height - 38), footer, fill=(230, 238, 245, 255), font=font)
     return np.asarray(image)
 
 
@@ -625,7 +622,7 @@ def render_schematic(sample: dict, width: int, height: int) -> np.ndarray:
     arrow_end = (hx + int(correction[0] * 1800), hy - int(correction[1] * 1800))
     arrow((hx, hy), arrow_end, (255, 210, 80, 210), width_px=5)
     draw.rectangle((80, 82, width - 80, 104), fill=(8, 13, 20, 180), outline=(120, 150, 180, 160))
-    draw.text((92, 88), f"closed-loop residual policy | corrected servo {servo:.3f} m from raw {raw_servo:.3f} m | confidence {conf:.2f}", fill=(235, 245, 255, 230), font=ImageFont.load_default())
+    draw.text((92, 88), f"servo {servo:.3f}/{raw_servo:.3f}m | conf {conf:.2f}", fill=(235, 245, 255, 230), font=ImageFont.load_default())
 
     draw.rectangle((88, height - 118, 360, height - 88), fill=(8, 13, 20, 180), outline=(255, 240, 186, 150))
     draw.text((104, height - 110), narration_for_phase(sample["phase"]), fill=(255, 240, 186, 245), font=ImageFont.load_default())
