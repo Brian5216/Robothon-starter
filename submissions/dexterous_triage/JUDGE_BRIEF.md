@@ -4,7 +4,7 @@ Registration UUID: 9e089c2c-c100-4dad-8652-052d998ce23e
 
 ## Why This Entry Should Compete For #1
 
-Dexterous Triage Lab is a five-finger, 22-channel MuJoCo dexterous-hand system for a long-horizon medication triage task. This version compares the 89.3, 88.9, and 88.2 review patterns: it keeps the closed-loop/contact/slip evidence that scored best, tightens the demo to 60 seconds, removes duplicate caption layers, adds only short key-moment badges, and documents a physical bench-test protocol in the report without claiming unrun hardware tests.
+Dexterous Triage Lab is a five-finger, 22-channel MuJoCo dexterous-hand system for a long-horizon medication triage task. This version compares the 89.3, 88.9, and 88.2 review patterns: it keeps the closed-loop/contact/slip evidence that scored best, keeps the demo at 60 seconds, removes duplicate caption layers, upgrades the three key actions into clear KEY 1/2/3 beat markers with light motion effects, and documents a physical bench-test protocol in the report without claiming unrun hardware tests.
 
 ## What To Inspect First
 
@@ -41,7 +41,7 @@ Dexterous Triage Lab is a five-finger, 22-channel MuJoCo dexterous-hand system f
 - Control: closed-loop residual controller using visual-servo, contact-target, five-finger contact timeline, and slip-observer feedback.
 - Dexterous manipulation: five-finger hand, thumb opposition, cap rotation, fragile vial handling, and placement.
 - Engineering quality: deterministic run, validation script, structured artifacts, and fixed-seed ablation.
-- Presentation: generated video overlays concise stage text, route trails, scan beams, residual arrows, slip ripples, short key-moment badges, servo error, slip observer, residual norm, and confidence; one SRT subtitle layer and contact timeline evidence are included.
+- Presentation: generated video overlays concise stage text, route trails, scan beams, residual arrows, slip ripples, clear KEY 1/2/3 markers, light motion effects, servo error, slip observer, residual norm, and confidence; one SRT subtitle layer and contact timeline evidence are included.
 - Innovation: combines dexterous medication handling, safety confirmation, residual recovery, hardware-transfer test planning, and dataset export.
 
 ## Honest Scope

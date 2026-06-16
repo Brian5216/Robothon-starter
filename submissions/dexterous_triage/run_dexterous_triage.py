@@ -103,9 +103,9 @@ NARRATION = [
 ]
 
 KEY_MOMENTS = [
-    (0.30, 0.36, "GRASP"),
-    (0.43, 0.52, "UNCAP"),
-    (0.84, 0.90, "RECOVER"),
+    (0.30, 0.365, "KEY 1", "GRASP", "locked"),
+    (0.425, 0.535, "KEY 2", "ROTATE", "cap-off"),
+    (0.835, 0.905, "KEY 3", "RECOVER", "stable"),
 ]
 
 
@@ -499,11 +499,14 @@ def narration_for_phase(phase: float) -> str:
     return NARRATION[-1][2]
 
 
-def key_moment_for_phase(phase: float) -> str:
-    for start, end, text in KEY_MOMENTS:
+def key_moment_for_phase(phase: float) -> tuple[str, str, str, float]:
+    for start, end, key, action, detail in KEY_MOMENTS:
         if start <= phase < end:
-            return text
-    return ""
+            center = (start + end) * 0.5
+            span = max(end - start, 1e-9)
+            pulse = 1.0 - min(1.0, abs(phase - center) / (span * 0.5))
+            return key, action, detail, pulse
+    return "", "", "", 0.0
 
 
 def overlay_frame(frame: np.ndarray, sample: dict, frame_idx: int, total_frames: int) -> np.ndarray:
@@ -519,15 +522,26 @@ def overlay_frame(frame: np.ndarray, sample: dict, frame_idx: int, total_frames:
     draw.text((22, 64), narration_for_phase(sample["phase"]), fill=(255, 240, 186, 255), font=font)
     draw.text((width - 180, 18), f"{frame_idx + 1}/{total_frames}", fill=(220, 230, 240, 255), font=font)
 
-    key_moment = key_moment_for_phase(sample["phase"])
-    if key_moment:
+    key, action, detail, key_pulse = key_moment_for_phase(sample["phase"])
+    if key:
         pulse = 0.5 + 0.5 * math.sin(frame_idx * 0.65)
-        badge_w = 118
-        x1 = width - 382
+        badge_w = 214
+        x1 = width - 448
         y1 = 14
         fill = (255, 215, 76, 160 + int(70 * pulse))
-        draw.rectangle((x1, y1, x1 + badge_w, y1 + 24), fill=fill, outline=(255, 245, 170, 230), width=1)
-        draw.text((x1 + 8, y1 + 7), key_moment, fill=(20, 22, 24, 255), font=font)
+        draw.rectangle((x1, y1, x1 + badge_w, y1 + 34), fill=fill, outline=(255, 245, 170, 250), width=2)
+        draw.text((x1 + 8, y1 + 6), f"{key}: {action}", fill=(20, 22, 24, 255), font=font)
+        draw.text((x1 + 8, y1 + 20), detail, fill=(45, 46, 40, 235), font=font)
+
+    beat_y = 86
+    beat_x0 = width - 448
+    beat_gap = 58
+    for idx, (_, _, key_name, action_name, _) in enumerate(KEY_MOMENTS, start=0):
+        cx = beat_x0 + idx * beat_gap
+        active = key == key_name
+        color = (255, 215, 76, 240) if active else (150, 165, 178, 150)
+        draw.ellipse((cx, beat_y, cx + 12, beat_y + 12), fill=color, outline=(255, 245, 170, 220) if active else None)
+        draw.text((cx + 16, beat_y + 1), action_name[:3], fill=(230, 238, 245, 230), font=font)
 
     bars = [
         ("task", sample["task_completion"], (0, 224, 120, 255)),
@@ -648,14 +662,27 @@ def render_schematic(sample: dict, width: int, height: int) -> np.ndarray:
     draw.rectangle((80, 82, width - 80, 104), fill=(8, 13, 20, 180), outline=(120, 150, 180, 160))
     draw.text((92, 88), f"closed-loop residual policy | corrected servo {servo:.3f} m from raw {raw_servo:.3f} m | confidence {conf:.2f}", fill=(235, 245, 255, 230), font=ImageFont.load_default())
 
-    key_moment = key_moment_for_phase(phase)
-    if key_moment:
+    key, action, detail, key_pulse = key_moment_for_phase(phase)
+    if key:
         pulse = 0.5 + 0.5 * math.sin(phase * 140.0)
         target_x, target_y = (cx, cy) if sample["stage"] == "uncap" else (vx, vy)
-        ring = int(30 + 12 * pulse)
-        draw.ellipse((target_x - ring, target_y - ring, target_x + ring, target_y + ring), outline=(255, 225, 72, 220), width=4)
-        draw.rectangle((target_x + 20, target_y - 13, target_x + 150, target_y + 13), fill=(255, 215, 76, 210))
-        draw.text((target_x + 28, target_y - 5), key_moment, fill=(20, 22, 24, 255), font=ImageFont.load_default())
+        ring = int(34 + 18 * pulse)
+        draw.ellipse((target_x - ring, target_y - ring, target_x + ring, target_y + ring), outline=(255, 225, 72, 235), width=5)
+        draw.ellipse((target_x - ring - 11, target_y - ring - 11, target_x + ring + 11, target_y + ring + 11), outline=(255, 225, 72, 100), width=3)
+        label_w = 182
+        label_h = 32
+        label_x = min(width - 80 - label_w, target_x + 24)
+        label_y = max(126, target_y - 20)
+        draw.rectangle((label_x, label_y, label_x + label_w, label_y + label_h), fill=(255, 215, 76, 225), outline=(255, 245, 170, 250), width=2)
+        draw.text((label_x + 8, label_y + 5), f"{key}: {action}", fill=(20, 22, 24, 255), font=ImageFont.load_default())
+        draw.text((label_x + 8, label_y + 18), detail, fill=(45, 46, 40, 240), font=ImageFont.load_default())
+        for streak in range(5):
+            offset = 12 + streak * 9
+            alpha = 155 - streak * 22
+            if sample["stage"] == "uncap":
+                draw.arc((cx - offset, cy - offset, cx + offset, cy + offset), start=int(phase * 1200 + streak * 28) % 360, end=(int(phase * 1200) + 145) % 360, fill=(255, 245, 120, alpha), width=3)
+            else:
+                draw.line((target_x - offset, target_y + offset // 2, target_x - offset - 40, target_y + offset // 2 + 6), fill=(255, 245, 120, alpha), width=3)
 
     return np.asarray(image)
 
