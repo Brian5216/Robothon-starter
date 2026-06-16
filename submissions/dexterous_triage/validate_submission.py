@@ -26,6 +26,7 @@ def main() -> int:
     trajectory_path = ROOT / "artifacts" / "dexterous_triage_trajectory.json"
     policy_card_path = ROOT / "artifacts" / "dexterous_triage_policy_card.json"
     eval_path = ROOT / "artifacts" / "dexterous_triage_eval.json"
+    narration_path = ROOT / "artifacts" / "dexterous_triage_narration.srt"
     judge_brief_path = ROOT / "JUDGE_BRIEF.md"
     scorecard_path = ROOT / "rubric_scorecard.json"
     manifest_path = ROOT / "submission_manifest.json"
@@ -41,7 +42,7 @@ def main() -> int:
     if f"Registration UUID: {uuid}" not in pr_text:
         return fail("PR_DESCRIPTION.md must contain the same UUID as registration.json.")
 
-    for path in [video_path, report_path, trajectory_path, policy_card_path, eval_path, judge_brief_path, scorecard_path, manifest_path]:
+    for path in [video_path, report_path, trajectory_path, policy_card_path, eval_path, narration_path, judge_brief_path, scorecard_path, manifest_path]:
         if not path.exists():
             return fail(f"Missing required artifact: {path.relative_to(ROOT)}")
         if path.stat().st_size <= 0:
@@ -55,8 +56,10 @@ def main() -> int:
     closed_loop = report.get("closed_loop_metrics", {})
     if closed_loop.get("controller") != "residual visual-servo/contact/slip policy":
         return fail("Report must include closed-loop residual controller metrics.")
-    if float(closed_loop.get("median_visual_servo_error_m", 1.0)) > 0.030:
+    if float(closed_loop.get("median_visual_servo_error_m", 1.0)) > 0.012:
         return fail("Closed-loop median visual-servo error is too high.")
+    if float(closed_loop.get("servo_error_reduction_pct", 0.0)) < 40.0:
+        return fail("Residual controller must reduce visual-servo error by at least 40%.")
     if int(closed_loop.get("corrections_applied", 0)) <= 0:
         return fail("Closed-loop policy did not apply residual corrections.")
 
@@ -64,6 +67,7 @@ def main() -> int:
     required_fields = {
         "control_mode",
         "visual_servo_error_m",
+        "raw_visual_servo_error_m",
         "contact_balance_error",
         "slip_observer_error_mm",
         "residual_action_norm",
@@ -99,6 +103,10 @@ def main() -> int:
     scorecard = json.loads(scorecard_path.read_text(encoding="utf-8"))
     if len(scorecard.get("scorecard", {})) < 8:
         return fail("Rubric scorecard must cover all eight official scoring dimensions.")
+
+    narration = narration_path.read_text(encoding="utf-8")
+    if "Visual servoing aligns the palm" not in narration:
+        return fail("Narration SRT must include the visual-servo story beat.")
 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest.get("registration_uuid") != uuid:

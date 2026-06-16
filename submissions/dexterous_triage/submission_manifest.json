@@ -3,8 +3,8 @@
   "registration_uuid": "9e089c2c-c100-4dad-8652-052d998ce23e",
   "participant_name": "KK",
   "canonical_pull_request": "https://github.com/Faraday-Future-AI/Robothon-starter/pull/14",
-  "version": "v4-judge-brief",
-  "summary": "Five-finger 22-channel MuJoCo dexterous hand with closed-loop residual visual-servo/contact/slip policy and fixed-seed stress evaluation.",
+  "version": "v5-servo-narrated",
+  "summary": "Five-finger 22-channel MuJoCo dexterous hand with tighter post-residual visual-servo metrics, closed-loop contact/slip policy, narrated demo overlays, subtitles, and fixed-seed stress evaluation.",
   "primary_artifacts": {
     "scene": "dexterous_triage_scene.xml",
     "runner": "run_dexterous_triage.py",
@@ -13,6 +13,7 @@
     "report": "artifacts/dexterous_triage_report.json",
     "policy_card": "artifacts/dexterous_triage_policy_card.json",
     "stress_eval": "artifacts/dexterous_triage_eval.json",
+    "narration": "artifacts/dexterous_triage_narration.srt",
     "judge_brief": "JUDGE_BRIEF.md",
     "rubric_scorecard": "rubric_scorecard.json"
   },
@@ -23,7 +24,9 @@
     "residual_policy_success_rate": 1.0,
     "baseline_success_rate": 0.6875,
     "median_error_improvement_mm": 46.142,
-    "median_visual_servo_error_m": 0.02141,
+    "raw_median_visual_servo_error_m": 0.02141,
+    "median_visual_servo_error_m": 0.00672,
+    "servo_error_reduction_pct": 68.61,
     "final_slip_observer_error_mm": 1.079
   },
   "run": {

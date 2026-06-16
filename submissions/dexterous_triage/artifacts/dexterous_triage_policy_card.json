@@ -1,5 +1,5 @@
 {
-  "policy_name": "Dexterous Triage Residual Policy v3",
+  "policy_name": "Dexterous Triage Residual Policy v5",
   "controller_type": "deterministic closed-loop residual controller with imitation-style stage prior",
   "inputs": [
     "MuJoCo framepos sensors: palm_position, vial_position, pod_goal_position",
@@ -17,18 +17,20 @@
   "hand_topology": "five-finger dexterous hand: thumb, index, middle, ring, little",
   "closed_loop_evidence": {
     "controller": "residual visual-servo/contact/slip policy",
-    "median_visual_servo_error_m": 0.02141,
+    "median_visual_servo_error_m": 0.00672,
+    "raw_median_visual_servo_error_m": 0.02141,
+    "servo_error_reduction_pct": 68.61,
     "max_slip_observer_error_mm": 22.885,
     "final_slip_observer_error_mm": 1.079,
-    "mean_policy_confidence": 0.456,
-    "residual_norm_peak": 0.23158,
-    "corrections_applied": 1027,
+    "mean_policy_confidence": 0.5343,
+    "residual_norm_peak": 0.23461,
+    "corrections_applied": 1034,
     "randomized_policy_rollouts": 24
   },
   "randomization_protocol": {
     "rollouts": 24,
     "disturbances": "phase-varying vial pose bias and slip impulse during recovery window",
-    "pass_condition": "median servo error below 3 cm and final slip observer below 2.5 mm"
+    "pass_condition": "post-residual median servo error below 1.2 cm and final slip observer below 2.5 mm"
   },
   "why_this_addresses_review_feedback": [
     "The previous version looked purely scripted; this version logs residual actions from observed servo/contact/slip errors.",

@@ -1,0 +1,31 @@
+1
+00:00:00,000 --> 00:00:07,680
+System boots: sensors, task zones, and five-finger hand come online.
+
+2
+00:00:07,680 --> 00:00:16,000
+Visual servoing aligns the palm to the medicine vial under pose disturbance.
+
+3
+00:00:16,000 --> 00:00:24,320
+Five fingers close with contact-balanced grip, protecting the fragile vial.
+
+4
+00:00:24,320 --> 00:00:35,200
+Wrist roll and thumb opposition rotate the cap while the vial stays stable.
+
+5
+00:00:35,200 --> 00:00:44,800
+The hand carries the vial to the sterile pod with residual corrections active.
+
+6
+00:00:44,800 --> 00:00:52,480
+Delivery is confirmed only after the audit button is pressed.
+
+7
+00:00:52,480 --> 00:00:59,520
+A slip impulse is observed and corrected before release.
+
+8
+00:00:59,520 --> 00:01:04,000
+The run exports video, trajectory, policy card, stress eval, and judge brief.
