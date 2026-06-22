@@ -20,6 +20,9 @@
   "worst_post_place_vial_error_m": 0.01159,
   "closed_loop_metrics": {
     "controller": "residual visual-servo/contact/slip policy",
+    "tactile_reflex_latency_ms": 4.0,
+    "tactile_reflex_source": "MuJoCo option timestep=0.004s with touch/contact/slip residual gate",
+    "tactile_reflex_active_samples": 211,
     "median_visual_servo_error_m": 0.00672,
     "raw_median_visual_servo_error_m": 0.02141,
     "servo_error_reduction_pct": 68.61,
@@ -45,8 +48,9 @@
     "The proxy scores are a transparent self-audit, not an official Robothon score.",
     "The v5 hand exposes 21 robot joints plus the audit button channel: gantry xyz, wrist yaw/pitch/roll, five multi-joint fingers, and button actuation.",
     "The run exercises MuJoCo MJCF bodies, free joints, hinge/slide joints, position actuators, frame sensors, touch sensors, contacts, and generated video.",
+    "The controller exposes a 4ms MuJoCo timestep tactile-reflex gate for contact/slip recovery.",
     "The controller logs visual-servo residuals, contact-target error, slip-observer recovery, and policy confidence for each sampled rollout state.",
-    "The generated video includes stage narration overlays and an accompanying SRT subtitle file for clearer automated review.",
+    "The generated video uses short stage captions plus an accompanying SRT subtitle file for clearer automated review.",
     "The scenario is intentionally long-horizon: inspect, approach, grasp, uncap, place, confirm, recover, and export dataset labels."
   ]
 }

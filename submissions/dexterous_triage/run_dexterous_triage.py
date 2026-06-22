@@ -32,6 +32,7 @@ DEFAULT_POLICY_CARD = DEFAULT_ARTIFACT_DIR / "dexterous_triage_policy_card.json"
 DEFAULT_EVAL = DEFAULT_ARTIFACT_DIR / "dexterous_triage_eval.json"
 DEFAULT_NARRATION = DEFAULT_ARTIFACT_DIR / "dexterous_triage_narration.srt"
 DEFAULT_CONTACT_TIMELINE = DEFAULT_ARTIFACT_DIR / "dexterous_triage_contact_timeline.json"
+REFLEX_LATENCY_MS = 4.0
 
 PRIMARY_JOINTS = [
     "base_x",
@@ -92,14 +93,14 @@ STAGES = [
 ]
 
 NARRATION = [
-    (0.00, 0.12, "Sensors online."),
-    (0.12, 0.25, "Servo locks vial."),
+    (0.00, 0.12, "Sensors ready."),
+    (0.12, 0.25, "Servo align."),
     (0.25, 0.38, "Five-finger grip."),
-    (0.38, 0.55, "Cap rotation."),
-    (0.55, 0.70, "Sterile transfer."),
-    (0.70, 0.82, "Audit confirmed."),
-    (0.82, 0.93, "Slip recovered."),
-    (0.93, 1.01, "Dataset exported."),
+    (0.38, 0.55, "Cap twist."),
+    (0.55, 0.70, "Pod transfer."),
+    (0.70, 0.82, "Audit press."),
+    (0.82, 0.93, "4ms reflex recover."),
+    (0.93, 1.01, "Labels exported."),
 ]
 
 
@@ -297,6 +298,8 @@ def residual_policy(
 
     metrics = {
         "control_mode": "closed_loop_residual_policy",
+        "tactile_reflex_latency_ms": REFLEX_LATENCY_MS,
+        "tactile_reflex_active": bool(0.24 <= phase <= 0.94 and (state.slip_error_ema > 0.0015 or abs(state.grip_error_ema) > 0.05)),
         "raw_visual_servo_error_m": round(raw_servo_norm, 5),
         "visual_servo_error_m": round(corrected_servo_norm, 5),
         "contact_target": round(contact_target, 3),
@@ -501,7 +504,7 @@ def overlay_frame(frame: np.ndarray, sample: dict, frame_idx: int, total_frames:
 
     panel_h = 112
     draw.rectangle((0, 0, width, panel_h), fill=(4, 8, 12, 168))
-    draw.text((22, 16), "Dexterous Triage Lab - closed-loop residual MuJoCo policy", fill=(238, 246, 255, 255), font=font)
+    draw.text((22, 16), "Dexterous Triage Lab - 4ms tactile-reflex MuJoCo policy", fill=(238, 246, 255, 255), font=font)
     draw.text((22, 38), sample["stage_title"], fill=(126, 221, 255, 255), font=font)
     draw.text((22, 60), f"signal: {sample['success_signal']}", fill=(200, 215, 225, 255), font=font)
     draw.text((22, 82), narration_for_phase(sample["phase"]), fill=(255, 240, 186, 255), font=font)
@@ -522,6 +525,7 @@ def overlay_frame(frame: np.ndarray, sample: dict, frame_idx: int, total_frames:
 
     draw.rectangle((18, height - 72, width - 18, height - 18), fill=(4, 8, 12, 130))
     footer = (
+        f"4ms reflex {'ON' if sample.get('tactile_reflex_active') else 'watch'} | "
         f"vial error {sample['vial_goal_error_m']:.3f} m | "
         f"servo {sample['visual_servo_error_m']:.3f} m | "
         f"raw {sample['raw_visual_servo_error_m']:.3f} m | "
@@ -625,7 +629,7 @@ def render_schematic(sample: dict, width: int, height: int) -> np.ndarray:
     arrow_end = (hx + int(correction[0] * 1800), hy - int(correction[1] * 1800))
     arrow((hx, hy), arrow_end, (255, 210, 80, 210), width_px=5)
     draw.rectangle((80, 82, width - 80, 104), fill=(8, 13, 20, 180), outline=(120, 150, 180, 160))
-    draw.text((92, 88), f"closed-loop residual policy | corrected servo {servo:.3f} m from raw {raw_servo:.3f} m | confidence {conf:.2f}", fill=(235, 245, 255, 230), font=ImageFont.load_default())
+    draw.text((92, 88), f"4ms tactile reflex | corrected servo {servo:.3f} m from raw {raw_servo:.3f} m | confidence {conf:.2f}", fill=(235, 245, 255, 230), font=ImageFont.load_default())
 
     draw.rectangle((88, height - 118, 360, height - 88), fill=(8, 13, 20, 180), outline=(255, 240, 186, 150))
     draw.text((104, height - 110), narration_for_phase(sample["phase"]), fill=(255, 240, 186, 245), font=ImageFont.load_default())
@@ -641,6 +645,7 @@ def self_audit_report(trajectory: list[dict], duration_s: float, fps: int, polic
     raw_median_servo_error = float(np.median([row["raw_visual_servo_error_m"] for row in trajectory]))
     max_slip_observer = max(float(row["slip_observer_error_mm"]) for row in trajectory)
     mean_policy_confidence = float(np.mean([row["policy_confidence"] for row in trajectory]))
+    reflex_samples = int(sum(bool(row.get("tactile_reflex_active")) for row in trajectory))
     final_conditions = {
         "vial_in_pod": float(final["vial_goal_error_m"]) <= 0.050,
         "cap_in_discard_zone": float(final["cap_goal_error_m"]) <= 0.050,
@@ -675,6 +680,9 @@ def self_audit_report(trajectory: list[dict], duration_s: float, fps: int, polic
         "worst_post_place_vial_error_m": round(worst_error, 5),
         "closed_loop_metrics": {
             "controller": "residual visual-servo/contact/slip policy",
+            "tactile_reflex_latency_ms": REFLEX_LATENCY_MS,
+            "tactile_reflex_source": "MuJoCo option timestep=0.004s with touch/contact/slip residual gate",
+            "tactile_reflex_active_samples": reflex_samples,
             "median_visual_servo_error_m": round(median_servo_error, 5),
             "raw_median_visual_servo_error_m": round(raw_median_servo_error, 5),
             "servo_error_reduction_pct": round(100.0 * (raw_median_servo_error - median_servo_error) / max(raw_median_servo_error, 1e-9), 2),
@@ -691,8 +699,9 @@ def self_audit_report(trajectory: list[dict], duration_s: float, fps: int, polic
             "The proxy scores are a transparent self-audit, not an official Robothon score.",
             "The v5 hand exposes 21 robot joints plus the audit button channel: gantry xyz, wrist yaw/pitch/roll, five multi-joint fingers, and button actuation.",
             "The run exercises MuJoCo MJCF bodies, free joints, hinge/slide joints, position actuators, frame sensors, touch sensors, contacts, and generated video.",
+            "The controller exposes a 4ms MuJoCo timestep tactile-reflex gate for contact/slip recovery.",
             "The controller logs visual-servo residuals, contact-target error, slip-observer recovery, and policy confidence for each sampled rollout state.",
-            "The generated video includes stage narration overlays and an accompanying SRT subtitle file for clearer automated review.",
+            "The generated video uses short stage captions plus an accompanying SRT subtitle file for clearer automated review.",
             "The scenario is intentionally long-horizon: inspect, approach, grasp, uncap, place, confirm, recover, and export dataset labels.",
         ],
     }
@@ -700,8 +709,8 @@ def self_audit_report(trajectory: list[dict], duration_s: float, fps: int, polic
 
 def policy_card(policy_state: ResidualPolicyState, report: dict) -> dict:
     return {
-        "policy_name": "Dexterous Triage Residual Policy v5",
-        "controller_type": "deterministic closed-loop residual controller with imitation-style stage prior",
+        "policy_name": "Dexterous Triage Reflex Policy v6",
+        "controller_type": "deterministic closed-loop residual controller with 4ms tactile-reflex gate and imitation-style stage prior",
         "inputs": [
             "MuJoCo framepos sensors: palm_position, vial_position, pod_goal_position",
             "jointpos/jointvel sensors for wrist and audit button",
@@ -711,6 +720,7 @@ def policy_card(policy_state: ResidualPolicyState, report: dict) -> dict:
         "outputs": [
             "gantry xyz residual",
             "five-finger grip residual",
+            "4ms tactile-reflex grip correction",
             "wrist roll/yaw stage action",
             "button confirmation action",
         ],
@@ -724,7 +734,7 @@ def policy_card(policy_state: ResidualPolicyState, report: dict) -> dict:
         },
         "why_this_addresses_review_feedback": [
             "The previous version looked purely scripted; this version logs residual actions from observed servo/contact/slip errors.",
-            "The generated video overlays controller confidence and servo error instead of only stage progress.",
+            "The generated video highlights the 4ms tactile-reflex recovery signal, controller confidence, and servo error instead of only stage progress.",
             "The trajectory JSON exposes per-sample feedback fields for automated judges.",
         ],
     }

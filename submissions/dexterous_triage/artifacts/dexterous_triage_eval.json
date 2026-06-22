@@ -13,6 +13,9 @@
     "median_improvement_mm": 46.142,
     "demo_closed_loop_metrics": {
       "controller": "residual visual-servo/contact/slip policy",
+      "tactile_reflex_latency_ms": 4.0,
+      "tactile_reflex_source": "MuJoCo option timestep=0.004s with touch/contact/slip residual gate",
+      "tactile_reflex_active_samples": 211,
       "median_visual_servo_error_m": 0.00672,
       "raw_median_visual_servo_error_m": 0.02141,
       "servo_error_reduction_pct": 68.61,

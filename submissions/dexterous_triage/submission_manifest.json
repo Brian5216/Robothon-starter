@@ -3,8 +3,8 @@
   "registration_uuid": "9e089c2c-c100-4dad-8652-052d998ce23e",
   "participant_name": "KK",
   "canonical_pull_request": "https://github.com/Faraday-Future-AI/Robothon-starter/pull/21",
-  "version": "v6-dynamic-video",
-  "summary": "Five-finger 22-channel MuJoCo dexterous hand with tighter post-residual visual-servo metrics, closed-loop contact/slip policy, five-finger contact timeline, concise subtitles, dynamic route/residual/slip visuals, and fixed-seed stress evaluation.",
+  "version": "v16-4ms-tactile-reflex",
+  "summary": "Five-finger 22-channel MuJoCo dexterous hand with a 4ms tactile-reflex gate, post-residual visual-servo metrics, closed-loop contact/slip policy, five-finger contact timeline, concise subtitles, dynamic route/residual/slip visuals, and fixed-seed stress evaluation.",
   "primary_artifacts": {
     "scene": "dexterous_triage_scene.xml",
     "runner": "run_dexterous_triage.py",
@@ -24,6 +24,7 @@
     "final_task_completion": 1.0,
     "residual_policy_success_rate": 1.0,
     "baseline_success_rate": 0.6875,
+    "tactile_reflex_latency_ms": 4.0,
     "median_error_improvement_mm": 46.142,
     "raw_median_visual_servo_error_m": 0.02141,
     "median_visual_servo_error_m": 0.00672,

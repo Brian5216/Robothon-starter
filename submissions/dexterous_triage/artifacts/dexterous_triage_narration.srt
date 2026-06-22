@@ -1,10 +1,10 @@
 1
 00:00:00,000 --> 00:00:07,680
-Sensors online.
+Sensors ready.
 
 2
 00:00:07,680 --> 00:00:16,000
-Servo locks vial.
+Servo align.
 
 3
 00:00:16,000 --> 00:00:24,320
@@ -12,20 +12,20 @@ Five-finger grip.
 
 4
 00:00:24,320 --> 00:00:35,200
-Cap rotation.
+Cap twist.
 
 5
 00:00:35,200 --> 00:00:44,800
-Sterile transfer.
+Pod transfer.
 
 6
 00:00:44,800 --> 00:00:52,480
-Audit confirmed.
+Audit press.
 
 7
 00:00:52,480 --> 00:00:59,520
-Slip recovered.
+4ms reflex recover.
 
 8
 00:00:59,520 --> 00:01:04,000
-Dataset exported.
+Labels exported.

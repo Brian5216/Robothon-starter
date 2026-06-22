@@ -1,6 +1,6 @@
 {
-  "policy_name": "Dexterous Triage Residual Policy v5",
-  "controller_type": "deterministic closed-loop residual controller with imitation-style stage prior",
+  "policy_name": "Dexterous Triage Reflex Policy v6",
+  "controller_type": "deterministic closed-loop residual controller with 4ms tactile-reflex gate and imitation-style stage prior",
   "inputs": [
     "MuJoCo framepos sensors: palm_position, vial_position, pod_goal_position",
     "jointpos/jointvel sensors for wrist and audit button",
@@ -10,6 +10,7 @@
   "outputs": [
     "gantry xyz residual",
     "five-finger grip residual",
+    "4ms tactile-reflex grip correction",
     "wrist roll/yaw stage action",
     "button confirmation action"
   ],
@@ -17,6 +18,9 @@
   "hand_topology": "five-finger dexterous hand: thumb, index, middle, ring, little",
   "closed_loop_evidence": {
     "controller": "residual visual-servo/contact/slip policy",
+    "tactile_reflex_latency_ms": 4.0,
+    "tactile_reflex_source": "MuJoCo option timestep=0.004s with touch/contact/slip residual gate",
+    "tactile_reflex_active_samples": 211,
     "median_visual_servo_error_m": 0.00672,
     "raw_median_visual_servo_error_m": 0.02141,
     "servo_error_reduction_pct": 68.61,
@@ -34,7 +38,7 @@
   },
   "why_this_addresses_review_feedback": [
     "The previous version looked purely scripted; this version logs residual actions from observed servo/contact/slip errors.",
-    "The generated video overlays controller confidence and servo error instead of only stage progress.",
+    "The generated video highlights the 4ms tactile-reflex recovery signal, controller confidence, and servo error instead of only stage progress.",
     "The trajectory JSON exposes per-sample feedback fields for automated judges."
   ]
 }

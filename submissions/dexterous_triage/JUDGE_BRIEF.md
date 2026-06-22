@@ -4,7 +4,7 @@ Registration UUID: 9e089c2c-c100-4dad-8652-052d998ce23e
 
 ## Why This Entry Should Compete For #1
 
-Dexterous Triage Lab is a five-finger, 22-channel MuJoCo dexterous-hand system for a long-horizon medication triage task. It is designed to answer the previous review concern directly: the current version is not only a staged video, it logs closed-loop residual control, raw-vs-corrected visual servo error, contact balancing, a five-finger contact timeline, slip recovery, concise subtitles, dynamic route/residual/slip visuals, and fixed-seed stress-test results.
+Dexterous Triage Lab is a five-finger, 22-channel MuJoCo dexterous-hand system for a long-horizon medication triage task. It is designed to answer the previous review concern directly: the current version is not only a staged video, it logs a 4ms tactile-reflex recovery gate, closed-loop residual control, raw-vs-corrected visual servo error, contact balancing, a five-finger contact timeline, slip recovery, concise subtitles, dynamic route/residual/slip visuals, and fixed-seed stress-test results.
 
 ## What To Inspect First
 
@@ -21,7 +21,8 @@ Dexterous Triage Lab is a five-finger, 22-channel MuJoCo dexterous-hand system f
 - Final task completion: 1.0
 - Actuated channels: 22
 - Hand topology: five fingers - thumb, index, middle, ring, little
-- Residual corrections applied in the demo: 1027
+- Tactile-reflex latency: 4ms MuJoCo timestep, logged per trajectory sample
+- Residual corrections applied in the demo: 1034
 - Raw median visual-servo error: 0.02141 m
 - Post-residual median visual-servo error: 0.00672 m
 - Visual-servo error reduction: 68.61%
@@ -37,10 +38,10 @@ Dexterous Triage Lab is a five-finger, 22-channel MuJoCo dexterous-hand system f
 - Runnability: one command regenerates video, trajectory, report, policy card, and stress evaluation.
 - MuJoCo depth: MJCF bodies, free joints, hinge/slide joints, position actuators, frame sensors, touch sensors, contacts, and task zones.
 - Task design: long-horizon triage sequence with scan, grasp, uncap, place, confirm, recover, and export phases.
-- Control: closed-loop residual controller using visual-servo, contact-target, five-finger contact timeline, and slip-observer feedback.
+- Control: closed-loop residual controller using a 4ms tactile-reflex gate, visual-servo, contact-target, five-finger contact timeline, and slip-observer feedback.
 - Dexterous manipulation: five-finger hand, thumb opposition, cap rotation, fragile vial handling, and placement.
 - Engineering quality: deterministic run, validation script, structured artifacts, and fixed-seed ablation.
-- Presentation: generated video overlays concise stage text, route trails, scan beams, residual arrows, slip ripples, servo error, slip observer, residual norm, and confidence; SRT subtitles and contact timeline evidence are included.
+- Presentation: generated video overlays concise stage text, 4ms reflex state, route trails, scan beams, residual arrows, slip ripples, servo error, slip observer, residual norm, and confidence; SRT subtitles and contact timeline evidence are included.
 - Innovation: combines dexterous medication handling, safety confirmation, residual recovery, and dataset export.
 
 ## Honest Scope

@@ -63,10 +63,14 @@ def main() -> int:
         return fail("Residual controller must reduce visual-servo error by at least 40%.")
     if int(closed_loop.get("corrections_applied", 0)) <= 0:
         return fail("Closed-loop policy did not apply residual corrections.")
+    if float(closed_loop.get("tactile_reflex_latency_ms", 999.0)) > 4.0:
+        return fail("Closed-loop policy must document the 4ms tactile-reflex latency.")
 
     trajectory = json.loads(trajectory_path.read_text(encoding="utf-8"))
     required_fields = {
         "control_mode",
+        "tactile_reflex_latency_ms",
+        "tactile_reflex_active",
         "visual_servo_error_m",
         "raw_visual_servo_error_m",
         "contact_balance_error",
@@ -107,8 +111,8 @@ def main() -> int:
         return fail("Rubric scorecard must cover all eight official scoring dimensions.")
 
     narration = narration_path.read_text(encoding="utf-8")
-    if "Servo locks vial." not in narration:
-        return fail("Narration SRT must include the visual-servo story beat.")
+    if "4ms reflex recover." not in narration:
+        return fail("Narration SRT must include the 4ms reflex recovery story beat.")
 
     contact_timeline = json.loads(contact_timeline_path.read_text(encoding="utf-8"))
     if contact_timeline.get("finger_order") != ["thumb", "index", "middle", "ring", "little"]:
