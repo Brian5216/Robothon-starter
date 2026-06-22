@@ -1,0 +1,544 @@
+{
+  "project": "Dexterous Reflex Bench",
+  "evaluation_name": "fixed-seed residual policy stress test",
+  "rollout_count": 32,
+  "seed": 20260616,
+  "description": "Deterministic stress test over vial pose offsets, cap torque, clutter offset, and slip impulse. Baseline is the stage prior without residual feedback.",
+  "summary": {
+    "baseline_success_rate": 0.6875,
+    "residual_policy_success_rate": 1.0,
+    "baseline_median_error_mm": 56.386,
+    "residual_policy_median_error_mm": 10.462,
+    "residual_policy_p95_error_mm": 13.614,
+    "median_improvement_mm": 46.142,
+    "demo_closed_loop_metrics": {
+      "controller": "residual visual-servo/contact/slip policy",
+      "tactile_reflex_latency_ms": 4.0,
+      "tactile_reflex_source": "MuJoCo option timestep=0.004s with touch/contact/slip residual gate",
+      "tactile_reflex_active_samples": 211,
+      "median_visual_servo_error_m": 0.00672,
+      "raw_median_visual_servo_error_m": 0.02141,
+      "servo_error_reduction_pct": 68.61,
+      "max_slip_observer_error_mm": 22.885,
+      "final_slip_observer_error_mm": 1.079,
+      "mean_policy_confidence": 0.5343,
+      "residual_norm_peak": 0.23461,
+      "corrections_applied": 1034,
+      "randomized_policy_rollouts": 24
+    }
+  },
+  "rollouts": [
+    {
+      "seed": 0,
+      "initial_vial_offset_m": [
+        -0.00411,
+        -0.00479,
+        0.00701
+      ],
+      "cap_torque_scale": 0.0183,
+      "slip_impulse_mm": 21.151,
+      "clutter_offset_mm": 4.59,
+      "baseline_final_error_mm": 47.087,
+      "residual_policy_final_error_mm": 8.078,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 39.009
+    },
+    {
+      "seed": 1,
+      "initial_vial_offset_m": [
+        -0.00908,
+        -0.01369,
+        0.01472
+      ],
+      "cap_torque_scale": 0.1924,
+      "slip_impulse_mm": 8.545,
+      "clutter_offset_mm": 4.138,
+      "baseline_final_error_mm": 53.929,
+      "residual_policy_final_error_mm": 10.075,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 43.854
+    },
+    {
+      "seed": 2,
+      "initial_vial_offset_m": [
+        0.0195,
+        -0.00928,
+        0.00198
+      ],
+      "cap_torque_scale": 0.6047,
+      "slip_impulse_mm": 11.595,
+      "clutter_offset_mm": 0.386,
+      "baseline_final_error_mm": 56.165,
+      "residual_policy_final_error_mm": 10.624,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 45.541
+    },
+    {
+      "seed": 3,
+      "initial_vial_offset_m": [
+        0.00625,
+        -0.02172,
+        0.01299
+      ],
+      "cap_torque_scale": 0.5577,
+      "slip_impulse_mm": 14.07,
+      "clutter_offset_mm": 1.359,
+      "baseline_final_error_mm": 61.258,
+      "residual_policy_final_error_mm": 10.872,
+      "baseline_success": false,
+      "residual_policy_success": true,
+      "improvement_mm": 50.386
+    },
+    {
+      "seed": 4,
+      "initial_vial_offset_m": [
+        -0.02115,
+        -0.01238,
+        0.00454
+      ],
+      "cap_torque_scale": 0.652,
+      "slip_impulse_mm": 7.881,
+      "clutter_offset_mm": 10.329,
+      "baseline_final_error_mm": 59.926,
+      "residual_policy_final_error_mm": 11.075,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 48.851
+    },
+    {
+      "seed": 5,
+      "initial_vial_offset_m": [
+        -0.02011,
+        5e-05,
+        -0.0034
+      ],
+      "cap_torque_scale": 0.1286,
+      "slip_impulse_mm": 17.829,
+      "clutter_offset_mm": 0.959,
+      "baseline_final_error_mm": 55.462,
+      "residual_policy_final_error_mm": 10.329,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 45.133
+    },
+    {
+      "seed": 6,
+      "initial_vial_offset_m": [
+        -0.03148,
+        0.00851,
+        -0.00249
+      ],
+      "cap_torque_scale": 0.3059,
+      "slip_impulse_mm": 3.401,
+      "clutter_offset_mm": 4.022,
+      "baseline_final_error_mm": 62.0,
+      "residual_policy_final_error_mm": 11.355,
+      "baseline_success": false,
+      "residual_policy_success": true,
+      "improvement_mm": 50.645
+    },
+    {
+      "seed": 7,
+      "initial_vial_offset_m": [
+        -0.00052,
+        -0.00087,
+        0.00874
+      ],
+      "cap_torque_scale": 0.8775,
+      "slip_impulse_mm": 9.965,
+      "clutter_offset_mm": 17.61,
+      "baseline_final_error_mm": 48.742,
+      "residual_policy_final_error_mm": 8.688,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 40.054
+    },
+    {
+      "seed": 8,
+      "initial_vial_offset_m": [
+        0.02902,
+        0.0083,
+        0.00158
+      ],
+      "cap_torque_scale": 0.5515,
+      "slip_impulse_mm": 6.047,
+      "clutter_offset_mm": 11.51,
+      "baseline_final_error_mm": 63.755,
+      "residual_policy_final_error_mm": 11.43,
+      "baseline_success": false,
+      "residual_policy_success": true,
+      "improvement_mm": 52.325
+    },
+    {
+      "seed": 9,
+      "initial_vial_offset_m": [
+        0.01105,
+        0.03091,
+        0.01186
+      ],
+      "cap_torque_scale": 0.7815,
+      "slip_impulse_mm": 10.842,
+      "clutter_offset_mm": 4.018,
+      "baseline_final_error_mm": 69.673,
+      "residual_policy_final_error_mm": 13.056,
+      "baseline_success": false,
+      "residual_policy_success": true,
+      "improvement_mm": 56.617
+    },
+    {
+      "seed": 10,
+      "initial_vial_offset_m": [
+        -0.00452,
+        -0.0012,
+        -0.02524
+      ],
+      "cap_torque_scale": 0.1093,
+      "slip_impulse_mm": 20.854,
+      "clutter_offset_mm": 12.115,
+      "baseline_final_error_mm": 64.008,
+      "residual_policy_final_error_mm": 12.072,
+      "baseline_success": false,
+      "residual_policy_success": true,
+      "improvement_mm": 51.936
+    },
+    {
+      "seed": 11,
+      "initial_vial_offset_m": [
+        0.0051,
+        0.01538,
+        0.00835
+      ],
+      "cap_torque_scale": 0.4324,
+      "slip_impulse_mm": 4.802,
+      "clutter_offset_mm": 15.149,
+      "baseline_final_error_mm": 52.376,
+      "residual_policy_final_error_mm": 9.866,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 42.511
+    },
+    {
+      "seed": 12,
+      "initial_vial_offset_m": [
+        0.00105,
+        0.00202,
+        0.0032
+      ],
+      "cap_torque_scale": 0.4605,
+      "slip_impulse_mm": 15.753,
+      "clutter_offset_mm": 5.543,
+      "baseline_final_error_mm": 42.07,
+      "residual_policy_final_error_mm": 8.001,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 34.069
+    },
+    {
+      "seed": 13,
+      "initial_vial_offset_m": [
+        0.0109,
+        0.00242,
+        -0.01039
+      ],
+      "cap_torque_scale": 0.0525,
+      "slip_impulse_mm": 8.086,
+      "clutter_offset_mm": 13.742,
+      "baseline_final_error_mm": 48.88,
+      "residual_policy_final_error_mm": 9.275,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 39.605
+    },
+    {
+      "seed": 14,
+      "initial_vial_offset_m": [
+        0.01877,
+        0.00773,
+        -0.00871
+      ],
+      "cap_torque_scale": 0.2734,
+      "slip_impulse_mm": 15.158,
+      "clutter_offset_mm": 9.391,
+      "baseline_final_error_mm": 58.423,
+      "residual_policy_final_error_mm": 10.359,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 48.064
+    },
+    {
+      "seed": 15,
+      "initial_vial_offset_m": [
+        0.00064,
+        0.00355,
+        -0.006
+      ],
+      "cap_torque_scale": 0.5802,
+      "slip_impulse_mm": 12.951,
+      "clutter_offset_mm": 10.426,
+      "baseline_final_error_mm": 45.336,
+      "residual_policy_final_error_mm": 8.609,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 36.728
+    },
+    {
+      "seed": 16,
+      "initial_vial_offset_m": [
+        -0.00307,
+        0.02836,
+        0.00078
+      ],
+      "cap_torque_scale": 0.7711,
+      "slip_impulse_mm": 20.776,
+      "clutter_offset_mm": 11.971,
+      "baseline_final_error_mm": 69.884,
+      "residual_policy_final_error_mm": 12.386,
+      "baseline_success": false,
+      "residual_policy_success": true,
+      "improvement_mm": 57.498
+    },
+    {
+      "seed": 17,
+      "initial_vial_offset_m": [
+        0.00707,
+        -0.02442,
+        -0.00738
+      ],
+      "cap_torque_scale": 0.3554,
+      "slip_impulse_mm": 9.175,
+      "clutter_offset_mm": 0.254,
+      "baseline_final_error_mm": 58.224,
+      "residual_policy_final_error_mm": 10.355,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 47.869
+    },
+    {
+      "seed": 18,
+      "initial_vial_offset_m": [
+        -0.02368,
+        -0.01792,
+        0.01658
+      ],
+      "cap_torque_scale": 0.4062,
+      "slip_impulse_mm": 13.336,
+      "clutter_offset_mm": 7.241,
+      "baseline_final_error_mm": 68.776,
+      "residual_policy_final_error_mm": 13.573,
+      "baseline_success": false,
+      "residual_policy_success": true,
+      "improvement_mm": 55.203
+    },
+    {
+      "seed": 19,
+      "initial_vial_offset_m": [
+        0.01531,
+        0.00624,
+        -0.0051
+      ],
+      "cap_torque_scale": 0.1185,
+      "slip_impulse_mm": 18.891,
+      "clutter_offset_mm": 17.223,
+      "baseline_final_error_mm": 56.606,
+      "residual_policy_final_error_mm": 10.659,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 45.947
+    },
+    {
+      "seed": 20,
+      "initial_vial_offset_m": [
+        0.00573,
+        0.01159,
+        -0.0087
+      ],
+      "cap_torque_scale": 0.9322,
+      "slip_impulse_mm": 16.88,
+      "clutter_offset_mm": 0.538,
+      "baseline_final_error_mm": 54.544,
+      "residual_policy_final_error_mm": 10.564,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 43.98
+    },
+    {
+      "seed": 21,
+      "initial_vial_offset_m": [
+        0.01275,
+        0.00435,
+        -0.00154
+      ],
+      "cap_torque_scale": 0.8659,
+      "slip_impulse_mm": 19.099,
+      "clutter_offset_mm": 13.06,
+      "baseline_final_error_mm": 56.08,
+      "residual_policy_final_error_mm": 9.781,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 46.299
+    },
+    {
+      "seed": 22,
+      "initial_vial_offset_m": [
+        0.00227,
+        -0.01113,
+        -0.00136
+      ],
+      "cap_torque_scale": 0.5063,
+      "slip_impulse_mm": 21.537,
+      "clutter_offset_mm": 14.752,
+      "baseline_final_error_mm": 53.78,
+      "residual_policy_final_error_mm": 9.6,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 44.18
+    },
+    {
+      "seed": 23,
+      "initial_vial_offset_m": [
+        0.00053,
+        -0.00752,
+        -0.00345
+      ],
+      "cap_torque_scale": 0.1997,
+      "slip_impulse_mm": 7.605,
+      "clutter_offset_mm": 14.848,
+      "baseline_final_error_mm": 43.238,
+      "residual_policy_final_error_mm": 6.887,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 36.352
+    },
+    {
+      "seed": 24,
+      "initial_vial_offset_m": [
+        -0.02155,
+        0.02495,
+        0.00232
+      ],
+      "cap_torque_scale": 0.9549,
+      "slip_impulse_mm": 5.232,
+      "clutter_offset_mm": 9.171,
+      "baseline_final_error_mm": 67.502,
+      "residual_policy_final_error_mm": 13.738,
+      "baseline_success": false,
+      "residual_policy_success": true,
+      "improvement_mm": 53.764
+    },
+    {
+      "seed": 25,
+      "initial_vial_offset_m": [
+        -0.03429,
+        0.0088,
+        0.00494
+      ],
+      "cap_torque_scale": 0.8339,
+      "slip_impulse_mm": 12.775,
+      "clutter_offset_mm": 2.202,
+      "baseline_final_error_mm": 71.165,
+      "residual_policy_final_error_mm": 13.664,
+      "baseline_success": false,
+      "residual_policy_success": true,
+      "improvement_mm": 57.501
+    },
+    {
+      "seed": 26,
+      "initial_vial_offset_m": [
+        -0.00148,
+        0.01719,
+        -0.01397
+      ],
+      "cap_torque_scale": 0.378,
+      "slip_impulse_mm": 16.449,
+      "clutter_offset_mm": 3.116,
+      "baseline_final_error_mm": 58.241,
+      "residual_policy_final_error_mm": 10.739,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 47.502
+    },
+    {
+      "seed": 27,
+      "initial_vial_offset_m": [
+        -0.00692,
+        -0.01547,
+        0.00102
+      ],
+      "cap_torque_scale": 0.0699,
+      "slip_impulse_mm": 23.665,
+      "clutter_offset_mm": 6.599,
+      "baseline_final_error_mm": 55.836,
+      "residual_policy_final_error_mm": 9.852,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 45.984
+    },
+    {
+      "seed": 28,
+      "initial_vial_offset_m": [
+        -0.00812,
+        0.00539,
+        -0.00902
+      ],
+      "cap_torque_scale": 0.0882,
+      "slip_impulse_mm": 4.159,
+      "clutter_offset_mm": 8.378,
+      "baseline_final_error_mm": 44.332,
+      "residual_policy_final_error_mm": 8.038,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 36.295
+    },
+    {
+      "seed": 29,
+      "initial_vial_offset_m": [
+        0.00696,
+        -0.00402,
+        0.01467
+      ],
+      "cap_torque_scale": 0.0198,
+      "slip_impulse_mm": 6.548,
+      "clutter_offset_mm": 10.101,
+      "baseline_final_error_mm": 48.596,
+      "residual_policy_final_error_mm": 9.463,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 39.133
+    },
+    {
+      "seed": 30,
+      "initial_vial_offset_m": [
+        -0.02145,
+        0.0026,
+        0.0105
+      ],
+      "cap_torque_scale": 0.6333,
+      "slip_impulse_mm": 13.552,
+      "clutter_offset_mm": 10.288,
+      "baseline_final_error_mm": 61.497,
+      "residual_policy_final_error_mm": 11.984,
+      "baseline_success": false,
+      "residual_policy_success": true,
+      "improvement_mm": 49.513
+    },
+    {
+      "seed": 31,
+      "initial_vial_offset_m": [
+        -0.00382,
+        0.02343,
+        0.00189
+      ],
+      "cap_torque_scale": 0.0796,
+      "slip_impulse_mm": 8.98,
+      "clutter_offset_mm": 17.911,
+      "baseline_final_error_mm": 58.202,
+      "residual_policy_final_error_mm": 11.627,
+      "baseline_success": true,
+      "residual_policy_success": true,
+      "improvement_mm": 46.575
+    }
+  ]
+}
