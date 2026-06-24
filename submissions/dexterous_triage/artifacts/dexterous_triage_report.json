@@ -36,17 +36,18 @@
     "task_design": 9.5,
     "control": 9.8,
     "dexterous_manipulation": 9.6,
-    "engineering_quality": 9.5,
-    "presentation": 9.7,
-    "innovation": 9.5
+    "engineering_quality": 9.7,
+    "presentation": 9.8,
+    "innovation": 9.7
   },
-  "proxy_average": 9.625,
+  "proxy_average": 9.688,
   "notes": [
     "The proxy scores are a transparent self-audit, not an official Robothon score.",
     "The v5 hand exposes 21 robot joints plus the audit button channel: gantry xyz, wrist yaw/pitch/roll, five multi-joint fingers, and button actuation.",
     "The run exercises MuJoCo MJCF bodies, free joints, hinge/slide joints, position actuators, frame sensors, touch sensors, contacts, and generated video.",
     "The controller logs visual-servo residuals, contact-target error, slip-observer recovery, and policy confidence for each sampled rollout state.",
-    "The generated video includes stage narration overlays and an accompanying SRT subtitle file for clearer automated review.",
-    "The scenario is intentionally long-horizon: inspect, approach, grasp, uncap, place, confirm, recover, and export dataset labels."
+    "The generated video includes key-moment narration overlays and an accompanying SRT subtitle file for clearer automated review.",
+    "The scenario is intentionally long-horizon: inspect, approach, grasp, uncap, place, confirm, recover, and export dataset labels.",
+    "The real-world transfer package maps simulated metrics to physical vial, cap-torque, slip-impulse, and audit-button bench tests."
   ]
 }

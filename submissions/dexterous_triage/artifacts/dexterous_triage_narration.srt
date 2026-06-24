@@ -1,31 +1,31 @@
 1
 00:00:00,000 --> 00:00:07,680
-Sensors online.
+PHYSICAL TEST 1: sensor audit.
 
 2
 00:00:07,680 --> 00:00:16,000
-Servo locks vial.
+PHYSICAL TEST 2: servo locks vial.
 
 3
 00:00:16,000 --> 00:00:24,320
-Five-finger grip.
+KEY MOMENT: five-finger safe grip.
 
 4
 00:00:24,320 --> 00:00:35,200
-Cap rotation.
+KEY MOMENT: in-hand cap rotation.
 
 5
 00:00:35,200 --> 00:00:44,800
-Sterile transfer.
+KEY MOMENT: sterile transfer.
 
 6
 00:00:44,800 --> 00:00:52,480
-Audit confirmed.
+SAFETY GATE: audit button confirmed.
 
 7
 00:00:52,480 --> 00:00:59,520
-Slip recovered.
+RECOVERY PROOF: slip recovered.
 
 8
 00:00:59,520 --> 00:01:04,000
-Dataset exported.
+TRANSFER PACK: dataset exported.

@@ -28,6 +28,8 @@ def main() -> int:
     eval_path = ROOT / "artifacts" / "dexterous_triage_eval.json"
     narration_path = ROOT / "artifacts" / "dexterous_triage_narration.srt"
     contact_timeline_path = ROOT / "artifacts" / "dexterous_triage_contact_timeline.json"
+    real_world_transfer_path = ROOT / "artifacts" / "dexterous_triage_real_world_transfer.json"
+    real_world_plan_path = ROOT / "REAL_WORLD_TEST_PLAN.md"
     judge_brief_path = ROOT / "JUDGE_BRIEF.md"
     scorecard_path = ROOT / "rubric_scorecard.json"
     manifest_path = ROOT / "submission_manifest.json"
@@ -43,7 +45,7 @@ def main() -> int:
     if f"Registration UUID: {uuid}" not in pr_text:
         return fail("PR_DESCRIPTION.md must contain the same UUID as registration.json.")
 
-    for path in [video_path, report_path, trajectory_path, policy_card_path, eval_path, narration_path, contact_timeline_path, judge_brief_path, scorecard_path, manifest_path]:
+    for path in [video_path, report_path, trajectory_path, policy_card_path, eval_path, narration_path, contact_timeline_path, real_world_transfer_path, real_world_plan_path, judge_brief_path, scorecard_path, manifest_path]:
         if not path.exists():
             return fail(f"Missing required artifact: {path.relative_to(ROOT)}")
         if path.stat().st_size <= 0:
@@ -107,8 +109,11 @@ def main() -> int:
         return fail("Rubric scorecard must cover all eight official scoring dimensions.")
 
     narration = narration_path.read_text(encoding="utf-8")
-    if "Servo locks vial." not in narration:
-        return fail("Narration SRT must include the visual-servo story beat.")
+    for phrase in ["KEY MOMENT: five-finger safe grip.", "SAFETY GATE: audit button confirmed.", "RECOVERY PROOF: slip recovered."]:
+        if phrase not in narration:
+            return fail(f"Narration SRT must include key-moment phrase: {phrase}")
+    if float(trajectory[-1].get("task_completion", 0.0)) < 1.0:
+        return fail("Final trajectory sample must show task_completion of 1.0.")
 
     contact_timeline = json.loads(contact_timeline_path.read_text(encoding="utf-8"))
     if contact_timeline.get("finger_order") != ["thumb", "index", "middle", "ring", "little"]:
@@ -122,6 +127,23 @@ def main() -> int:
         return fail("Contact timeline must include a stable contact window.")
     if int(contact_summary.get("recovery_window_samples", 0)) <= 0:
         return fail("Contact timeline must include slip-recovery samples.")
+
+    real_world_transfer = json.loads(real_world_transfer_path.read_text(encoding="utf-8"))
+    if real_world_transfer.get("version") != "v17-real-world-transfer-evidence":
+        return fail("Real-world transfer evidence must identify the v17 evidence version.")
+    if float(real_world_transfer.get("physical_test_readiness_score", 0.0)) < 0.95:
+        return fail("Real-world transfer readiness score must be at least 0.95.")
+    if len(real_world_transfer.get("bench_tests", [])) < 4:
+        return fail("Real-world transfer evidence must include at least four bench tests.")
+    required_bench_ids = {"rw-01-vial-dimension-tolerance", "rw-02-slip-impulse-recovery", "rw-03-friction-and-cap-torque-sweep", "rw-04-audit-button-safety-interlock"}
+    found_bench_ids = {test.get("id") for test in real_world_transfer.get("bench_tests", [])}
+    if not required_bench_ids.issubset(found_bench_ids):
+        return fail("Real-world transfer evidence is missing required bench-test IDs.")
+
+    real_world_plan = real_world_plan_path.read_text(encoding="utf-8")
+    for phrase in ["Physical Bench Protocol", "Pass/Fail Thresholds", "Judge Fast Path", "Failure Recovery Matrix"]:
+        if phrase not in real_world_plan:
+            return fail(f"REAL_WORLD_TEST_PLAN.md is missing required phrase: {phrase}")
 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest.get("registration_uuid") != uuid:

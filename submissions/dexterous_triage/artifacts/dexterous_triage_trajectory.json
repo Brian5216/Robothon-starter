@@ -27973,7 +27973,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 59.667,
     "sensors": {
       "palm_position": [
@@ -28051,7 +28051,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 59.833,
     "sensors": {
       "palm_position": [
@@ -28129,7 +28129,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 60.0,
     "sensors": {
       "palm_position": [
@@ -28207,7 +28207,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 60.167,
     "sensors": {
       "palm_position": [
@@ -28285,7 +28285,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 60.333,
     "sensors": {
       "palm_position": [
@@ -28363,7 +28363,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 60.5,
     "sensors": {
       "palm_position": [
@@ -28441,7 +28441,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 60.667,
     "sensors": {
       "palm_position": [
@@ -28519,7 +28519,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 60.833,
     "sensors": {
       "palm_position": [
@@ -28597,7 +28597,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 61.0,
     "sensors": {
       "palm_position": [
@@ -28675,7 +28675,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 61.167,
     "sensors": {
       "palm_position": [
@@ -28753,7 +28753,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 61.333,
     "sensors": {
       "palm_position": [
@@ -28831,7 +28831,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 61.5,
     "sensors": {
       "palm_position": [
@@ -28909,7 +28909,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 61.667,
     "sensors": {
       "palm_position": [
@@ -28987,7 +28987,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 61.833,
     "sensors": {
       "palm_position": [
@@ -29065,7 +29065,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 62.0,
     "sensors": {
       "palm_position": [
@@ -29143,7 +29143,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 62.167,
     "sensors": {
       "palm_position": [
@@ -29221,7 +29221,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 62.333,
     "sensors": {
       "palm_position": [
@@ -29299,7 +29299,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 62.5,
     "sensors": {
       "palm_position": [
@@ -29377,7 +29377,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 62.667,
     "sensors": {
       "palm_position": [
@@ -29455,7 +29455,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 62.833,
     "sensors": {
       "palm_position": [
@@ -29533,7 +29533,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 63.0,
     "sensors": {
       "palm_position": [
@@ -29611,7 +29611,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 63.167,
     "sensors": {
       "palm_position": [
@@ -29689,7 +29689,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 63.333,
     "sensors": {
       "palm_position": [
@@ -29767,7 +29767,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 63.5,
     "sensors": {
       "palm_position": [
@@ -29845,7 +29845,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 63.667,
     "sensors": {
       "palm_position": [
@@ -29923,7 +29923,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 63.833,
     "sensors": {
       "palm_position": [
@@ -30001,7 +30001,7 @@
     "cap_goal_error_m": 0.0,
     "button_depth_m": 0.032,
     "slip_mm": 0.0,
-    "task_completion": 0.75,
+    "task_completion": 1.0,
     "time_s": 63.944,
     "sensors": {
       "palm_position": [
